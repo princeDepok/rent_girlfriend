@@ -6,40 +6,51 @@ from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
-class UserListSerializer(serializers.HyperlinkedModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password'] 
+        fields = ['id', 'username', 'email'] 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            phone_number=validated_data['phone_number'],
+            gender=validated_data['gender'],
+            birth_place=validated_data['birth_place'],
+            birth_date=validated_data['birth_date'],
         )
         return user
+    
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date']
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    username = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):
-        email = data.get('email')
+        username = data.get('username')
         password = data.get('password')
 
-        if email and password:
-            user = authenticate(request=self.context.get('request'), username=email, password=password)
+        if username and password:
+            user = authenticate(request=self.context.get('request'), username=username, password=password)
             if not user:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
         else:
-            msg = _('Must include "email" and "password".')
+            msg = _('Must include "username" and "password".')
             raise serializers.ValidationError(msg, code='authorization')
 
         data['user'] = user
@@ -48,7 +59,15 @@ class LoginSerializer(serializers.Serializer):
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
-class ConfirmResetPasswordSerializer(serializers.Serializer):
+class ValidateOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
     otp = serializers.CharField()
+
+class SetNewPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     new_password = serializers.CharField()
+
+from rest_framework import serializers
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
