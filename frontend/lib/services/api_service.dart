@@ -4,7 +4,7 @@ import 'token_storage.dart';
 
 class ApiService {
   late final Dio _dio;
-  final String _baseUrl = 'http://192.168.100.20:8000/api/';
+  final String _baseUrl = 'http://10.10.154.48:8000/api/';
   final TokenStorage tokenStorage = TokenStorage();
 
   ApiService() {
@@ -31,10 +31,11 @@ class ApiService {
 
   Future<Response> getUserDetails(int userId, String accessToken) async {
     return await _dio.get(
-      'user/$userId/',
+      'users/user/$userId/',
       options: Options(
         headers: {
-          'Authorization': 'Bearer Token $accessToken',
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $accessToken',
         },
       ),
     );

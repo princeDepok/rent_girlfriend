@@ -30,7 +30,7 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -38,12 +38,13 @@ class LoginView(generics.GenericAPIView):
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
-        })
+            'user_id': user.id,  
+        })  
 
 class ResetPasswordView(generics.GenericAPIView):
     serializer_class = ResetPasswordSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
@@ -55,7 +56,7 @@ logger = logging.getLogger(__name__)
 class ValidateOTPView(generics.GenericAPIView):
     serializer_class = ValidateOTPSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
@@ -71,7 +72,7 @@ class ValidateOTPView(generics.GenericAPIView):
 class SetNewPasswordView(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
@@ -99,3 +100,12 @@ class LogoutView(APIView):
             logger.error("Invalid data: %s", serializer.errors)
             # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response({"error": "halo"}, status=status.HTTP_400_BAD_REQUEST)
+
+class RefreshTokenView(APIView):
+    def get_tokens_for_user(user):
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }

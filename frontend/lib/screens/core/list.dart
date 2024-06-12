@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/services/token_storage.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
@@ -10,13 +12,27 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   final List<Profile> profiles = [
     Profile('assets/image1.png', 'Natayow', 'Charming', 'Female'),
-    Profile('assets/image2.png', 'Rayhan Diffa', 'Soft Boy', 'Male'),
+    Profile('assets/image2.png', 'Rayhan Diffa', 'Soft Boy', 'Lady Boy'),
     Profile('assets/image3.png', 'Kenny Ekenayake', 'Fragile Boy', 'Female'),
     Profile('assets/image4.png', 'Iqbal Saputra', 'Handsome Boy', 'Male'),
     Profile('assets/image5.png', 'Swill Sefarty', 'Fun', 'Female'),
     Profile('assets/image4.png', 'Iqbal Saputra', 'Handsome Boy', 'Female'),
     Profile('assets/image5.png', 'Swill Sefarty', 'Fun', 'Male'),
   ];
+
+  final TokenStorage _tokenStorage = TokenStorage();
+
+  // Sign out function
+  Future<void> _signOut() async {
+    await _tokenStorage.deleteTokens();
+    _navigateToSignIn();
+  }
+
+  // Navigate to SignIn screen
+  void _navigateToSignIn() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => SignIn()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +123,15 @@ class _ListScreenState extends State<ListScreen> {
                   );
                 },
               ),
+            ),
+            ElevatedButton(
+              onPressed: _signOut,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple,
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 24.0),
+              ),
+              child: const Text('Sign Out', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),

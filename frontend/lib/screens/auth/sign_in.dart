@@ -63,8 +63,9 @@ class _SignInState extends State<SignIn> {
           final refreshToken = response.data['refresh'];
           await _tokenStorage.saveTokens(accessToken, refreshToken);
 
-          final userId = response.data['user']['id'];
-          final userDetailsResponse = await _apiService.getUserDetails(userId, accessToken);
+          final userId = response.data['user_id'];
+          final userDetailsResponse =
+              await _apiService.getUserDetails(userId, accessToken);
 
           if (userDetailsResponse.statusCode == 200) {
             final userData = userDetailsResponse.data;
