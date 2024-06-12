@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/auth/sign_up.dart';
+// import 'package:frontend/screens/core/list.dart';
+import 'package:frontend/screens/core/list_details.dart';
+// import 'package:frontend/screens/core/list.dart';
+// import 'package:frontend/screens/core/test.dart';
+// import 'package:frontend/screens/auth/sign_up.dart';
+// import 'package:frontend/screens/core/list_details.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,13 +17,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SignUp(),
+      home: ProfilePage(),
     );
   }
 }
-
-

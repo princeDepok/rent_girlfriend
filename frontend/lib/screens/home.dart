@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
-import 'package:frontend/services/api_service.dart';
+// import 'package:frontend/services/api_service.dart';
 import 'package:frontend/services/token_storage.dart';
 
 class Home extends StatefulWidget {
@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final ApiService _apiService = ApiService();
+  // final ApiService _apiService = ApiService();
   final TokenStorage _tokenStorage = TokenStorage();
 
   // Sign out function
