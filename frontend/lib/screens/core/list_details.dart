@@ -1,19 +1,13 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class ListDetail extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfilePage(),
-    );
-  }
+  State<ListDetail> createState() => _ListDetailState();
 }
 
-class ProfilePage extends StatelessWidget {
+class _ListDetailState extends State<ListDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +22,14 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 100,
-                  backgroundImage: AssetImage(
-                      'assets/fester.jpg'), // Ensure you have this image in your assets
+              Container(
+                width: double.infinity,
+                height: 300,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/iqbal.jpeg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -89,7 +86,27 @@ class ProfilePage extends StatelessWidget {
                   InterestChip(label: 'Gardening'),
                 ],
               ),
-              
+              SizedBox(height: 30),
+              Text(
+                'Photo Album',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: 10),
+              PhotoAlbum(),
+              SizedBox(height: 30),
+              Text(
+                'Reviews',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              ReviewSection(),
             ],
           ),
         ),
@@ -132,5 +149,61 @@ class InterestChip extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+}
+
+class PhotoAlbum extends StatelessWidget {
+  final List<String> photos = [
+    'assets/images/iqbal.jpeg',
+    'assets/images/iqbal.jpeg',
+    'assets/images/iqbal.jpeg',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: photos.length,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: EdgeInsets.only(right: 10),
+            width: 150,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(photos[index]),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ReviewSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'Write a review',
+          ),
+          maxLines: 5,
+        ),
+        SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            // Implement the logic to handle review submission
+          },
+          child: Text('Submit Review'),
+        ),
+      ],
+    );
   }
 }

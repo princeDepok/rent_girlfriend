@@ -12,12 +12,20 @@ class TokenStorage {
     await _secureStorage.write(key: 'access', value: accessToken);
   }
 
+  Future<void> saveUserId(String userId) async {
+    await _secureStorage.write(key: 'userId', value: userId);
+  }
+
   Future<String?> getAccessToken() async {
     return await _secureStorage.read(key: 'access');
   }
 
   Future<String?> getRefreshToken() async {
     return await _secureStorage.read(key: 'refresh');
+  }
+
+  Future<String?> getUserId() async {
+    return await _secureStorage.read(key: 'userId');
   }
 
   Future<void> deleteTokens() async {

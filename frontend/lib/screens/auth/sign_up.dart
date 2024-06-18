@@ -26,8 +26,8 @@ class _SignUpState extends State<SignUp> {
   };
   String? _gender;
   final ApiService _apiService = ApiService();
+  bool _isLoading = false;
 
-  // Input decoration for TextFields
   InputDecoration _inputDecoration(String hintText, IconData icon) {
     return InputDecoration(
       hintText: hintText,
@@ -42,7 +42,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  // Build TextFormField with custom properties
   Widget _buildTextField(String key, String hintText, IconData icon,
       {bool obscureText = false,
       String? Function(String?)? validator,
@@ -57,9 +56,12 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  // Submit form and handle API response
-  void _submitForm() async {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
       final data = {
         'first_name': _controllers['firstName']!.text,
         'last_name': _controllers['lastName']!.text,
@@ -75,8 +77,6 @@ class _SignUpState extends State<SignUp> {
       try {
         final response = await _apiService.registerUser(data);
         if (response.statusCode == 200 || response.statusCode == 201) {
-          print('Registration successful');
-
           final loginData = {
             'username': data['email'],
             'password': data['password'],
@@ -84,25 +84,32 @@ class _SignUpState extends State<SignUp> {
 
           final loginResponse = await _apiService.loginUser(loginData);
           if (loginResponse.statusCode == 200) {
-            // Save the tokens
             final tokens = loginResponse.data;
             await _apiService.tokenStorage
                 .saveTokens(tokens['access'], tokens['refresh']);
-
             _navigateToHome(response.data);
           } else {
-            print('Login failed after registration');
+            _showError('Login failed after registration');
           }
         } else {
-          print('Registration failed: ${response.data}');
+          _showError('Registration failed: ${response.data}');
         }
       } catch (e) {
-        print('Error: $e');
+        _showError('Error: $e');
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
-  // Navigate to SignIn screen
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
+  }
+
   void _navigateToSignIn() {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => SignIn()));
@@ -315,16 +322,18 @@ class _SignUpState extends State<SignUp> {
                       },
                     ),
                     const SizedBox(height: 32),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 24.0),
-                      ),
-                      child:
-                          const Text('Sign Up', style: TextStyle(fontSize: 18)),
-                    ),
+                    _isLoading
+                        ? CircularProgressIndicator()
+                        : ElevatedButton(
+                            onPressed: _submitForm,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.purple,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 24.0),
+                            ),
+                            child: const Text('Sign Up',
+                                style: TextStyle(fontSize: 18)),
+                          ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

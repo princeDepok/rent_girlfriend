@@ -1,5 +1,8 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/screens/core/list_details.dart';
 import 'package:frontend/services/token_storage.dart';
 
 class ListScreen extends StatefulWidget {
@@ -11,13 +14,16 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final List<Profile> profiles = [
-    Profile('assets/image1.png', 'Natayow', 'Charming', 'Female'),
-    Profile('assets/image2.png', 'Rayhan Diffa', 'Soft Boy', 'Lady Boy'),
-    Profile('assets/image3.png', 'Kenny Ekenayake', 'Fragile Boy', 'Female'),
-    Profile('assets/image4.png', 'Iqbal Saputra', 'Handsome Boy', 'Male'),
-    Profile('assets/image5.png', 'Swill Sefarty', 'Fun', 'Female'),
-    Profile('assets/image4.png', 'Iqbal Saputra', 'Handsome Boy', 'Female'),
-    Profile('assets/image5.png', 'Swill Sefarty', 'Fun', 'Male'),
+    Profile('assets/images/iqbal.jpeg', 'Natayow', 'Charming', 'Female'),
+    Profile('assets/images/iqbal.jpeg', 'Rayhan Diffa', 'Soft Boy', 'Lady Boy'),
+    Profile(
+        'assets/images/iqbal.jpeg', 'Kenny Ekenayake', 'Fragile Boy', 'Female'),
+    Profile(
+        'assets/images/iqbal.jpeg', 'Iqbal Saputra', 'Handsome Boy', 'Male'),
+    Profile('assets/images/iqbal.jpeg', 'Swill Sefarty', 'Fun', 'Female'),
+    Profile(
+        'assets/images/iqbal.jpeg', 'Iqbal Saputra', 'Handsome Boy', 'Female'),
+    Profile('assets/images/iqbal.jpeg', 'Swill Sefarty', 'Fun', 'Male'),
   ];
 
   final TokenStorage _tokenStorage = TokenStorage();
@@ -32,6 +38,12 @@ class _ListScreenState extends State<ListScreen> {
   void _navigateToSignIn() {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => SignIn()));
+  }
+
+  // Navigate to SignIn screen
+  void _navigateToListDetail() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => ListDetail()));
   }
 
   @override
@@ -119,7 +131,9 @@ class _ListScreenState extends State<ListScreen> {
                   final profile = profiles[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ProfileCard(profile: profile),
+                    child: GestureDetector(
+                        child: ProfileCard(profile: profile),
+                        onTap: _navigateToListDetail),
                   );
                 },
               ),
@@ -171,14 +185,16 @@ class ProfileCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundImage: AssetImage(profile.imagePath),
-            radius: 30,
-            onBackgroundImageError: (exception, stackTrace) {
-              print('Error loading image: ${profile.imagePath}');
-            },
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              profile.imagePath,
+              width: 70,
+              height: 70,
+              fit: BoxFit.cover,
+            ),
           ),
-          SizedBox(width: 16),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,32 +206,47 @@ class ProfileCard extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
+                Row(
+                  children: [
+                    Icon(Icons.label, size: 16, color: Colors.purple),
+                    SizedBox(width: 4),
+                    Text(profile.description),
+                    SizedBox(width: 8),
+                    Icon(Icons.male, size: 16, color: Colors.blue),
+                    SizedBox(width: 4),
+                    Text(profile.gender),
+                  ],
+                ),
+                SizedBox(height: 4),
                 Text(
-                  profile.description,
+                  'Tier ready GM-Honor..',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 12,
+                    color: Colors.grey,
                   ),
                 ),
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: profile.gender == 'Male' ? Colors.blue : Colors.pink,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                profile.gender,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+          Column(
+            children: [
+              Icon(Icons.circle, size: 12, color: Colors.green),
+              SizedBox(height: 4),
+              Container(
+                padding: EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  color: Colors.purple,
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Text(
+                  '12"',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),

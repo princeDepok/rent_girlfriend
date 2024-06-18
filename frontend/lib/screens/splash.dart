@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/screens/core/list.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/screens/core/list.dart'; // Update the import to match your file structure
+import 'package:frontend/screens/home.dart';
+import '../../services/api_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,28 +15,55 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final ApiService _apiService = ApiService();
   bool isLoggedIn = false;
+  Map<String, dynamic> userData = {};
 
   Future<void> loginState() async {
     String? accessToken = await _secureStorage.read(key: "access");
-    setState(() {
-      isLoggedIn = accessToken != null;
-    });
+    if (accessToken != null) {
+      print('Access token found: $accessToken');
+      try {
+        String? userId = await _secureStorage.read(key: "userId");
+        if (userId != null) {
+          print('User ID found: $userId');
+          final response =
+              await _apiService.getUserDetails(int.parse(userId), accessToken);
+          if (response.statusCode == 200) {
+            setState(() {
+              isLoggedIn = true;
+              userData = response.data;
+            });
+            print('User data retrieved: $userData');
+          } else {
+            print('Failed to retrieve user data: ${response.statusCode}');
+          }
+        } else {
+          print('User ID not found.');
+        }
+      } catch (e) {
+        print('Error retrieving user data: $e');
+      }
+    } else {
+      print('Access token not found.');
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    loginState();
-    Timer(
-      Duration(seconds: 4),
-      () => Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => isLoggedIn ? ListScreen() : SignIn(),
+    loginState().then((_) {
+      Timer(
+        const Duration(seconds: 4),
+        () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                isLoggedIn ? Home(userData: userData) : const SignIn(),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override
