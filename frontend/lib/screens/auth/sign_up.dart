@@ -332,7 +332,8 @@ class _SignUpState extends State<SignUp> {
                                   vertical: 16.0, horizontal: 24.0),
                             ),
                             child: const Text('Sign Up',
-                                style: TextStyle(fontSize: 18)),
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white70)),
                           ),
                     const SizedBox(height: 16),
                     Row(

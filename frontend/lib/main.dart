@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
 import 'package:frontend/screens/auth/sign_up.dart';
-import 'package:frontend/screens/core/list.dart';
-// import 'package:frontend/screens/core/list.dart';
 import 'package:frontend/screens/core/list_details.dart';
 import 'package:frontend/screens/home.dart';
 import 'package:frontend/screens/splash.dart';

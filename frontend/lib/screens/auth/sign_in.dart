@@ -21,28 +21,46 @@ class _SignInState extends State<SignIn> {
   final ApiService _apiService = ApiService();
   final TokenStorage _tokenStorage = TokenStorage();
 
-  InputDecoration _inputDecoration(String hintText, IconData icon) {
-    return InputDecoration(
-      hintText: hintText,
-      prefixIcon: Icon(icon, color: Colors.white),
-      filled: true,
-      fillColor: Colors.white12,
-      hintStyle: const TextStyle(color: Colors.white70),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.0),
-        borderSide: BorderSide.none,
+  Widget _buildTextField(String key, String hintText,
+      {bool obscureText = false, String? Function(String?)? validator}) {
+    return SizedBox(
+      height: 68, // Increased height to accommodate error message
+      child: TextFormField(
+        controller: _controllers[key],
+        decoration: _inputDecoration(hintText),
+        style: const TextStyle(color: Colors.black),
+        obscureText: obscureText,
+        validator: validator,
       ),
     );
   }
 
-  Widget _buildTextField(String key, String hintText, IconData icon,
-      {bool obscureText = false, String? Function(String?)? validator}) {
-    return TextFormField(
-      controller: _controllers[key],
-      decoration: _inputDecoration(hintText, icon),
-      style: const TextStyle(color: Colors.white),
-      obscureText: obscureText,
-      validator: validator,
+  InputDecoration _inputDecoration(String hintText) {
+    return InputDecoration(
+      hintText: hintText,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Color(0xFF9EA1A8)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Color(0xFF9EA1A8)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Color(0xFF9EA1A8)),
+      ),
+      errorMaxLines: 2, // Allows the error text to wrap into multiple lines
+      errorStyle: TextStyle(
+        color: Colors.red,
+        fontSize: 14, // Increased font size for better readability
+      ),
+      hintStyle: TextStyle(
+          color: Color(0xFF9EA1A8),
+          fontWeight: FontWeight.normal,
+          fontSize: 12),
     );
   }
 
@@ -107,7 +125,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFF1C1B2D),
+        backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
@@ -118,23 +136,22 @@ class _SignInState extends State<SignIn> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Text(
-                      'Welcome to Chat book',
+                      'Welcome to Rent Companion',
                       style: TextStyle(
                         fontSize: 24,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       'Enter your credentials to login.',
-                      style: TextStyle(fontSize: 16, color: Colors.white70),
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
                     _buildTextField(
                       'username',
                       'Username',
-                      Icons.person,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';
@@ -151,7 +168,6 @@ class _SignInState extends State<SignIn> {
                     _buildTextField(
                       'password',
                       'Password',
-                      Icons.lock,
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -167,21 +183,25 @@ class _SignInState extends State<SignIn> {
                         onPressed: _navigateToForgotPassword,
                         child: const Text(
                           'Forgot password?',
-                          style: TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.black54),
                         ),
                       ),
                     ),
                     const SizedBox(height: 32),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 24.0),
-                      ),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(fontSize: 18),
+                    GestureDetector(
+                      onTap: _submitForm,
+                      child: Container(
+                        height: 48,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFF73C3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -190,13 +210,13 @@ class _SignInState extends State<SignIn> {
                       children: [
                         const Text(
                           "Don't have an account?",
-                          style: TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.black54),
                         ),
                         TextButton(
                           onPressed: _navigateToSignUp,
                           child: const Text(
                             'Create Account',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ],

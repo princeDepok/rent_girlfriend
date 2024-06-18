@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
-import 'package:frontend/screens/core/list.dart'; // Update the import to match your file structure
 import 'package:frontend/screens/home.dart';
 import '../../services/api_service.dart';
 
