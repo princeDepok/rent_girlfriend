@@ -13,62 +13,90 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
-  final Map<String, TextEditingController> _controllers = {
-    'username': TextEditingController(),
-    'password': TextEditingController(),
-  };
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   String? _errorMessage;
   final ApiService _apiService = ApiService();
   final TokenStorage _tokenStorage = TokenStorage();
+  bool _isLoading = false;
 
-  Widget _buildTextField(String key, String hintText,
-      {bool obscureText = false, String? Function(String?)? validator}) {
+  Widget _buildTextField(
+      {required TextEditingController controller,
+      required String hintText,
+      bool obscureText = false,
+      String? Function(String?)? validator}) {
     return SizedBox(
-      height: 68, // Increased height to accommodate error message
-      child: TextFormField(
-        controller: _controllers[key],
-        decoration: _inputDecoration(hintText),
-        style: const TextStyle(color: Colors.black),
-        obscureText: obscureText,
-        validator: validator,
+      height: 68,
+      child: Column(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: controller,
+              decoration: _buildInputDecoration(hintText),
+              style: const TextStyle(
+                color: Colors.black,
+                fontFamily: 'Outfit',
+              ),
+              obscureText: obscureText,
+              validator: validator,
+            ),
+          ),
+          SizedBox(
+            height: _errorMessage != null ? 0 : 0,
+            child: _errorMessage != null
+                ? Text(
+                    _errorMessage!,
+                    style: const TextStyle(
+                        color: Colors.red, fontFamily: 'Outfit'),
+                  )
+                : const SizedBox(),
+          ),
+        ],
       ),
     );
   }
 
-  InputDecoration _inputDecoration(String hintText) {
+  InputDecoration _buildInputDecoration(String hintText) {
     return InputDecoration(
       hintText: hintText,
+      hintStyle: const TextStyle(
+        color: Color(0xFF9EA1A8),
+        fontWeight: FontWeight.normal,
+        fontSize: 12,
+        fontFamily: 'Outfit',
+      ),
       filled: true,
       fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.0),
-        borderSide: BorderSide(color: Color(0xFF9EA1A8)),
+        borderSide: const BorderSide(color: Color(0xFF9EA1A8)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.0),
-        borderSide: BorderSide(color: Color(0xFF9EA1A8)),
+        borderSide: const BorderSide(color: Color(0xFF9EA1A8)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.0),
-        borderSide: BorderSide(color: Color(0xFF9EA1A8)),
+        borderSide: const BorderSide(color: Color(0xFF9EA1A8)),
       ),
-      errorMaxLines: 2, // Allows the error text to wrap into multiple lines
-      errorStyle: TextStyle(
+      errorMaxLines: 2,
+      errorStyle: const TextStyle(
         color: Colors.red,
-        fontSize: 14, // Increased font size for better readability
+        fontSize: 9,
+        fontFamily: 'Outfit',
       ),
-      hintStyle: TextStyle(
-          color: Color(0xFF9EA1A8),
-          fontWeight: FontWeight.normal,
-          fontSize: 12),
     );
   }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
       final data = {
-        'username': _controllers['username']!.text,
-        'password': _controllers['password']!.text,
+        'username': _usernameController.text,
+        'password': _passwordController.text,
       };
 
       try {
@@ -98,18 +126,39 @@ class _SignInState extends State<SignIn> {
             setState(() {
               _errorMessage = 'Failed to retrieve user details.';
             });
+            _showErrorSnackbar(_errorMessage!);
           }
+        } else if (response.statusCode == 400) {
+          setState(() {
+            _errorMessage = 'Incorrect username or password.';
+          });
+          _showErrorSnackbar(_errorMessage!);
         } else {
           setState(() {
-            _errorMessage = 'Incorrect email or password.';
+            _errorMessage = 'An error occurred. Please try again.';
           });
+          _showErrorSnackbar(_errorMessage!);
         }
       } catch (e) {
         setState(() {
           _errorMessage = 'An error occurred. Please try again.';
         });
+        _showErrorSnackbar(_errorMessage!);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
+  }
+
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   void _navigateToSignUp() {
@@ -125,9 +174,18 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Sign In',
+            style: TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w600),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          toolbarHeight: 75,
+        ),
         backgroundColor: Colors.white,
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Center(
             child: SingleChildScrollView(
               child: Form(
@@ -138,20 +196,25 @@ class _SignInState extends State<SignIn> {
                     const Text(
                       'Welcome to Rent Companion',
                       style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.black,
-                      ),
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       'Enter your credentials to login.',
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                        fontFamily: 'Outfit',
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
                     _buildTextField(
-                      'username',
-                      'Username',
+                      controller: _usernameController,
+                      hintText: 'Username',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';
@@ -159,15 +222,10 @@ class _SignInState extends State<SignIn> {
                         return null;
                       },
                     ),
-                    if (_errorMessage != null)
-                      Text(
-                        _errorMessage!,
-                        style: const TextStyle(color: Colors.red),
-                      ),
                     const SizedBox(height: 16),
                     _buildTextField(
-                      'password',
-                      'Password',
+                      controller: _passwordController,
+                      hintText: 'Password',
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -176,17 +234,6 @@ class _SignInState extends State<SignIn> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _navigateToForgotPassword,
-                        child: const Text(
-                          'Forgot password?',
-                          style: TextStyle(color: Colors.black54),
-                        ),
-                      ),
-                    ),
                     const SizedBox(height: 32),
                     GestureDetector(
                       onTap: _submitForm,
@@ -194,29 +241,56 @@ class _SignInState extends State<SignIn> {
                         height: 48,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Color(0xFFFF73C3),
+                          color: const Color(0xFFFF73C3),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         alignment: Alignment.center,
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              )
+                            : const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'Outfit',
+                                ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: _navigateToForgotPassword,
+                      child: const Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 12,
+                          fontFamily: 'Outfit',
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          "Don't have an account?",
-                          style: TextStyle(color: Colors.black54),
+                          "Don't have an account? ",
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Outfit',
+                          ),
                         ),
-                        TextButton(
-                          onPressed: _navigateToSignUp,
+                        GestureDetector(
+                          onTap: _navigateToSignUp,
                           child: const Text(
-                            'Create Account',
-                            style: TextStyle(color: Colors.black),
+                            'Create account',
+                            style: TextStyle(
+                              color: Color(0xFFFF73C3),
+                              fontFamily: 'Outfit',
+                            ),
                           ),
                         ),
                       ],

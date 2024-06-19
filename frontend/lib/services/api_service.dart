@@ -38,10 +38,36 @@ class ApiService {
     }
   }
 
+  Future<bool> registerAndLoginUser(Map<String, dynamic> registrationData) async {
+    try {
+      final registerResponse = await registerUser(registrationData);
+      if (registerResponse.statusCode == 200 || registerResponse.statusCode == 201) {
+        final loginData = {
+          'username': registrationData['email'],
+          'password': registrationData['password'],
+        };
+        final loginResponse = await loginUser(loginData);
+        if (loginResponse.statusCode == 200) {
+          final tokens = loginResponse.data;
+          await tokenStorage.saveTokens(tokens['access'], tokens['refresh']);
+          return true;
+        } else {
+          print('Login failed after registration: ${loginResponse.data}');
+          return false;
+        }
+      } else {
+        print('Registration failed: ${registerResponse.data}');
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
+
   Future<Response> getUserDetails(int userId, String accessToken) async {
     try {
-      print(
-          'Requesting user details for userId: $userId with token: $accessToken');
+      print('Requesting user details for userId: $userId with token: $accessToken');
       final response = await _dio.get(
         'users/user/$userId/',
         options: Options(

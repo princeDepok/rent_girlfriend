@@ -1,7 +1,16 @@
+// lib/screens/home.dart
+
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
 import 'package:frontend/screens/core/profile.dart';
 import 'package:frontend/services/token_storage.dart';
+import 'package:frontend/widgets/menu_bar.dart';
+
+// Const for strings
+const String popularServices = 'Popular Services';
+const String ordersPage = 'Orders Page';
+const String profilePage = 'Profile Page';
+const String recommendedGamers = 'Recommended Gamers';
 
 class Home extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -15,16 +24,48 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final TokenStorage _tokenStorage = TokenStorage();
   final List<Profile> profiles = [
-    Profile('assets/images/iqbal.jpeg', 'Natayow', 'Charming', 'Female'),
-    Profile('assets/images/iqbal.jpeg', 'Rayhan Diffa', 'Soft Boy', 'Lady Boy'),
-    Profile(
-        'assets/images/iqbal.jpeg', 'Kenny Ekenayake', 'Fragile Boy', 'Female'),
-    Profile(
-        'assets/images/iqbal.jpeg', 'Iqbal Saputra', 'Handsome Boy', 'Male'),
-    Profile('assets/images/iqbal.jpeg', 'Swill Sefarty', 'Fun', 'Female'),
-    Profile(
-        'assets/images/iqbal.jpeg', 'Iqbal Saputra', 'Handsome Boy', 'Female'),
-    Profile('assets/images/iqbal.jpeg', 'Swill Sefarty', 'Fun', 'Male'),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Natayow',
+      description: 'Charming',
+      gender: 'Female',
+    ),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Rayhan Diffa',
+      description: 'Soft Boy',
+      gender: 'Lady Boy',
+    ),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Kenny Ekenayake',
+      description: 'Fragile Boy',
+      gender: 'Female',
+    ),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Iqbal Saputra',
+      description: 'Handsome Boy',
+      gender: 'Male',
+    ),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Swill Sefarty',
+      description: 'Fun',
+      gender: 'Female',
+    ),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Iqbal Saputra',
+      description: 'Handsome Boy',
+      gender: 'Female',
+    ),
+    const Profile(
+      imagePath: 'assets/images/iqbal.jpeg',
+      name: 'Swill Sefarty',
+      description: 'Fun',
+      gender: 'Male',
+    ),
   ];
 
   int _selectedIndex = 0;
@@ -36,8 +77,13 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _signOut() async {
-    await _tokenStorage.deleteTokens();
-    _navigateToSignIn();
+    try {
+      await _tokenStorage.deleteTokens();
+      _navigateToSignIn();
+    } catch (e) {
+      // Handle error, e.g., show a Snackbar
+      print('Error signing out: $e');
+    }
   }
 
   void _navigateToSignIn() {
@@ -50,46 +96,34 @@ class _HomeState extends State<Home> {
     String username = widget.userData['username'] ?? 'N/A';
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'Halo, $username',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: _selectedIndex == 0
+          ? AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              title: Text(
+                'Halo, $username',
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: "Outfit",
+                    fontWeight: FontWeight.w600),
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search, color: Colors.black),
+                  onPressed: () {},
+                  tooltip: 'Search',
+                ),
+              ],
+            )
+          : null,
       body: _selectedIndex == 0
           ? _buildHomeContent()
           : _selectedIndex == 1
               ? _buildOrdersContent()
-              : ProfileScreen(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400),
-        onTap: _onItemTapped,
+              : const ProfileScreen(),
+      bottomNavigationBar: CustomMenuBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
@@ -106,7 +140,7 @@ class _HomeState extends State<Home> {
               decoration: BoxDecoration(
                 color: Colors.blue[100],
                 borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
+                image: const DecorationImage(
                   image: AssetImage(
                       'assets/images/banner1.png'), // Replace with your image path
                   fit: BoxFit.cover,
@@ -115,26 +149,33 @@ class _HomeState extends State<Home> {
               height: 200, // Adjust the height as needed
             ),
             const SizedBox(height: 20),
-            Text(
-              'Popular Services',
+            const Text(
+              popularServices,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            GridView.count(
+            GridView.builder(
               shrinkWrap: true,
-              crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              children: [
-                _buildServiceCategory(
-                    'assets/images/iqbal.jpeg', 'Mobile Legends'),
-                _buildServiceCategory(
-                    'assets/images/iqbal.jpeg', 'Teman Curhat'),
-                _buildServiceCategory('assets/images/iqbal.jpeg', 'PUBG'),
-                _buildServiceCategory('assets/images/iqbal.jpeg', 'Free Fire'),
-                _buildServiceCategory('assets/images/iqbal.jpeg', 'Ludo King'),
-                _buildServiceCategory('assets/images/iqbal.jpeg', 'More'),
-              ],
+              itemCount: 6,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (context, index) {
+                final serviceCategories = [
+                  'Mobile Legends',
+                  'Teman Curhat',
+                  'PUBG',
+                  'Free Fire',
+                  'Ludo King',
+                  'More'
+                ];
+                return ServiceCategory(
+                  iconPath: 'assets/images/iqbal.jpeg',
+                  label: serviceCategories[index],
+                );
+              },
             ),
             const SizedBox(height: 20),
             Row(
@@ -149,16 +190,16 @@ class _HomeState extends State<Home> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Sure Win',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        Text('Refund if you don’t win'),
+                        const Text('Refund if you don’t win'),
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {},
-                          child: Text('Go'),
+                          child: const Text('Go'),
                         ),
                       ],
                     ),
@@ -174,7 +215,7 @@ class _HomeState extends State<Home> {
                           color: Colors.blue[100],
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Column(
+                        child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -193,7 +234,7 @@ class _HomeState extends State<Home> {
                           color: Colors.purple[100],
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Column(
+                        child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -211,14 +252,14 @@ class _HomeState extends State<Home> {
               ],
             ),
             const SizedBox(height: 20),
-            Text(
-              'Recommended Gamers',
+            const Text(
+              recommendedGamers,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: profiles.length,
               itemBuilder: (context, index) {
                 final profile = profiles[index];
@@ -238,34 +279,20 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildOrdersContent() {
-    return Center(
+    return const Center(
       child: Text(
-        'Orders Page',
+        ordersPage,
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     );
   }
 
   Widget _buildProfileContent() {
-    return Center(
+    return const Center(
       child: Text(
-        'Profile Page',
+        profilePage,
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
-    );
-  }
-
-  Widget _buildServiceCategory(String iconPath, String label) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundColor: Colors.red[100],
-          backgroundImage: AssetImage(iconPath),
-        ),
-        SizedBox(height: 8),
-        Text(label, textAlign: TextAlign.center),
-      ],
     );
   }
 }
@@ -276,18 +303,23 @@ class Profile {
   final String description;
   final String gender;
 
-  Profile(this.imagePath, this.name, this.description, this.gender);
+  const Profile({
+    required this.imagePath,
+    required this.name,
+    required this.description,
+    required this.gender,
+  });
 }
 
 class ProfileCard extends StatelessWidget {
   final Profile profile;
 
-  ProfileCard({required this.profile});
+  const ProfileCard({required this.profile});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -295,7 +327,7 @@ class ProfileCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
-            offset: Offset(0, 5),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -310,31 +342,31 @@ class ProfileCard extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   profile.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
                 ),
                 Row(
                   children: [
-                    Icon(Icons.label, size: 16, color: Colors.purple),
-                    SizedBox(width: 4),
+                    const Icon(Icons.label, size: 16, color: Colors.purple),
+                    const SizedBox(width: 4),
                     Text(profile.description),
-                    SizedBox(width: 8),
-                    Icon(Icons.male, size: 16, color: Colors.blue),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.male, size: 16, color: Colors.blue),
+                    const SizedBox(width: 4),
                     Text(profile.gender),
                   ],
                 ),
-                SizedBox(height: 4),
-                Text(
+                const SizedBox(height: 4),
+                const Text(
                   'Tier ready GM-Honor..',
                   style: TextStyle(
                     fontSize: 12,
@@ -346,15 +378,15 @@ class ProfileCard extends StatelessWidget {
           ),
           Column(
             children: [
-              Icon(Icons.circle, size: 12, color: Colors.green),
-              SizedBox(height: 4),
+              const Icon(Icons.circle, size: 12, color: Colors.green),
+              const SizedBox(height: 4),
               Container(
-                padding: EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(4.0),
                 decoration: BoxDecoration(
                   color: Colors.purple,
                   borderRadius: BorderRadius.circular(4.0),
                 ),
-                child: Text(
+                child: const Text(
                   '12"',
                   style: TextStyle(
                     color: Colors.white,
@@ -366,6 +398,35 @@ class ProfileCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ServiceCategory extends StatelessWidget {
+  final String iconPath;
+  final String label;
+
+  const ServiceCategory({required this.iconPath, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 75,
+          height: 75,
+          decoration: BoxDecoration(
+            color: Colors.red[100],
+            borderRadius: BorderRadius.circular(34),
+            image: DecorationImage(
+              image: AssetImage(iconPath),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(label, textAlign: TextAlign.center),
+      ],
     );
   }
 }

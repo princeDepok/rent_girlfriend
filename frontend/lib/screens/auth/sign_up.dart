@@ -28,30 +28,50 @@ class _SignUpState extends State<SignUp> {
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
 
-  InputDecoration _inputDecoration(String hintText, IconData icon) {
+  InputDecoration _inputDecoration(String hintText) {
     return InputDecoration(
       hintText: hintText,
-      prefixIcon: Icon(icon, color: Colors.white),
+      hintStyle: const TextStyle(
+        color: Color(0xFF9EA1A8),
+        fontWeight: FontWeight.normal,
+        fontSize: 12,
+        fontFamily: 'Outfit',
+      ),
       filled: true,
-      fillColor: Colors.white12,
-      hintStyle: const TextStyle(color: Colors.white70),
+      fillColor: Colors.white,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.0),
-        borderSide: BorderSide.none,
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: const BorderSide(color: Color(0xFF9EA1A8)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: const BorderSide(color: Color(0xFF9EA1A8)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: const BorderSide(color: Color(0xFF9EA1A8)),
+      ),
+      errorMaxLines: 2,
+      errorStyle: const TextStyle(
+        color: Colors.red,
+        fontSize: 9,
+        fontFamily: 'Outfit',
       ),
     );
   }
 
-  Widget _buildTextField(String key, String hintText, IconData icon,
+  Widget _buildTextField(String key, String hintText,
       {bool obscureText = false,
+      TextInputType keyboardType = TextInputType.text,
       String? Function(String?)? validator,
       VoidCallback? onTap}) {
     return TextFormField(
       controller: _controllers[key],
-      decoration: _inputDecoration(hintText, icon),
-      style: const TextStyle(color: Colors.white),
+      decoration: _inputDecoration(hintText),
+      style: const TextStyle(color: Colors.black, fontFamily: 'Outfit'),
       obscureText: obscureText,
       validator: validator,
+      keyboardType: keyboardType,
       onTap: onTap,
     );
   }
@@ -75,24 +95,11 @@ class _SignUpState extends State<SignUp> {
       };
 
       try {
-        final response = await _apiService.registerUser(data);
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          final loginData = {
-            'username': data['email'],
-            'password': data['password'],
-          };
-
-          final loginResponse = await _apiService.loginUser(loginData);
-          if (loginResponse.statusCode == 200) {
-            final tokens = loginResponse.data;
-            await _apiService.tokenStorage
-                .saveTokens(tokens['access'], tokens['refresh']);
-            _navigateToHome(response.data);
-          } else {
-            _showError('Login failed after registration');
-          }
+        final success = await _apiService.registerAndLoginUser(data);
+        if (success) {
+          _navigateToHome(data);
         } else {
-          _showError('Registration failed: ${response.data}');
+          _showError('Registration or login failed. Please try again.');
         }
       } catch (e) {
         _showError('Error: $e');
@@ -107,6 +114,7 @@ class _SignUpState extends State<SignUp> {
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
+      backgroundColor: Colors.red,
     ));
   }
 
@@ -120,11 +128,19 @@ class _SignUpState extends State<SignUp> {
         MaterialPageRoute(builder: (context) => Home(userData: userData)));
   }
 
+  Widget _buildLoadingOverlay() {
+    if (!_isLoading) return Container();
+    return Container(
+      color: Colors.black54,
+      child: Center(child: CircularProgressIndicator()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFF1C1B2D),
+        backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
@@ -135,10 +151,23 @@ class _SignUpState extends State<SignUp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Text(
-                      'Welcome to Chat book',
+                      'Sign Up',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    const Text(
+                      'Welcome to Rent Companion',
                       style: TextStyle(
                         fontSize: 24,
-                        color: Colors.white,
+                        color: Colors.black,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -146,7 +175,8 @@ class _SignUpState extends State<SignUp> {
                       'Enter your details to sign up.',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white70,
+                        color: Colors.black54,
+                        fontFamily: 'Outfit',
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -157,7 +187,6 @@ class _SignUpState extends State<SignUp> {
                           child: _buildTextField(
                             'firstName',
                             'First Name',
-                            Icons.person,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your first name';
@@ -171,7 +200,6 @@ class _SignUpState extends State<SignUp> {
                           child: _buildTextField(
                             'lastName',
                             'Last Name',
-                            Icons.person,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your last name';
@@ -186,7 +214,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'userName',
                       'Username',
-                      Icons.person,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';
@@ -198,7 +225,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'email',
                       'Email',
-                      Icons.email,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
@@ -213,7 +239,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'password',
                       'Pick a strong password',
-                      Icons.lock,
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -229,7 +254,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'confirmPassword',
                       'Confirm Password',
-                      Icons.lock,
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -245,7 +269,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'phone',
                       'Phone Number',
-                      Icons.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your phone number';
@@ -258,20 +281,25 @@ class _SignUpState extends State<SignUp> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      decoration: _inputDecoration('Gender', Icons.person),
-                      dropdownColor: const Color(0xFF1C1B2D),
-                      style: const TextStyle(color: Colors.white),
+                      decoration: _inputDecoration('Gender'),
+                      dropdownColor: Colors.white,
+                      style: const TextStyle(
+                          color: Colors.black, fontFamily: 'Outfit'),
                       value: _gender,
                       onChanged: (String? newValue) {
                         setState(() {
                           _gender = newValue;
                         });
                       },
-                      items: <String>['Laki-Laki', 'Wanita']
+                      items: <String>['Laki-laki', 'Wanita']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(
+                            value,
+                            style: const TextStyle(
+                                color: Colors.black, fontFamily: 'Outfit'),
+                          ),
                         );
                       }).toList(),
                       validator: (value) {
@@ -285,7 +313,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'placeOfBirth',
                       'Place of Birth',
-                      Icons.location_city,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your place of birth';
@@ -297,7 +324,6 @@ class _SignUpState extends State<SignUp> {
                     _buildTextField(
                       'dateOfBirth',
                       'Date of Birth (yyyy-mm-dd)',
-                      Icons.calendar_today,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your date of birth';
@@ -323,31 +349,42 @@ class _SignUpState extends State<SignUp> {
                     ),
                     const SizedBox(height: 32),
                     _isLoading
-                        ? CircularProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: _submitForm,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16.0, horizontal: 24.0),
-                            ),
-                            child: const Text('Sign Up',
+                        ? const CircularProgressIndicator()
+                        : GestureDetector(
+                            onTap: _submitForm,
+                            child: Container(
+                              height: 48,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFF73C3),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'Sign Up',
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.white70)),
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'Outfit',
+                                ),
+                              ),
+                            ),
                           ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          "Have an account?",
-                          style: TextStyle(color: Colors.white),
+                          "Have an account? ",
+                          style: TextStyle(
+                              color: Colors.black54, fontFamily: 'Outfit'),
                         ),
-                        TextButton(
-                          onPressed: _navigateToSignIn,
+                        GestureDetector(
+                          onTap: _navigateToSignIn,
                           child: const Text(
-                            'Login',
-                            style: TextStyle(color: Colors.purple),
+                            'Sign In',
+                            style: TextStyle(
+                                color: Color(0xFFFF73C3), fontFamily: 'Outfit'),
                           ),
                         ),
                       ],
