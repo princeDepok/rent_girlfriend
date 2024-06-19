@@ -4,7 +4,7 @@ import 'token_storage.dart';
 
 class ApiService {
   late final Dio _dio;
-  final String _baseUrl = 'http://10.10.154.48:8000/api/';
+  final String _baseUrl = 'http://192.168.0.5:8000/api/';
   final TokenStorage tokenStorage = TokenStorage();
 
   ApiService() {
@@ -38,10 +38,12 @@ class ApiService {
     }
   }
 
-  Future<bool> registerAndLoginUser(Map<String, dynamic> registrationData) async {
+  Future<bool> registerAndLoginUser(
+      Map<String, dynamic> registrationData) async {
     try {
       final registerResponse = await registerUser(registrationData);
-      if (registerResponse.statusCode == 200 || registerResponse.statusCode == 201) {
+      if (registerResponse.statusCode == 200 ||
+          registerResponse.statusCode == 201) {
         final loginData = {
           'username': registrationData['email'],
           'password': registrationData['password'],
@@ -67,7 +69,8 @@ class ApiService {
 
   Future<Response> getUserDetails(int userId, String accessToken) async {
     try {
-      print('Requesting user details for userId: $userId with token: $accessToken');
+      print(
+          'Requesting user details for userId: $userId with token: $accessToken');
       final response = await _dio.get(
         'users/user/$userId/',
         options: Options(

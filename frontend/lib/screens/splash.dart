@@ -51,14 +51,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    loginState().then((_) {
+    loginState().then((_) async {
+      final savedUserData = await _secureStorage.readAll();
       Timer(
         const Duration(seconds: 4),
         () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) =>
-                isLoggedIn ? Home(userData: userData) : const SignIn(),
+                isLoggedIn ? Home(userData: savedUserData) : const SignIn(),
           ),
         ),
       );

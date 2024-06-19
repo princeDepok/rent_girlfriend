@@ -32,4 +32,22 @@ class TokenStorage {
     await _secureStorage.delete(key: 'access');
     await _secureStorage.delete(key: 'refresh');
   }
+
+  Future<void> saveUserData(Map<String, dynamic> userData) async {
+    for (var key in userData.keys) {
+      await _secureStorage.write(key: key, value: userData[key].toString());
+    }
+  }
+
+  Future<Map<String, String>> getUserData() async {
+    final allValues = await _secureStorage.readAll();
+    return allValues;
+  }
+
+  Future<void> deleteUserData() async {
+    final allValues = await _secureStorage.readAll();
+    for (var key in allValues.keys) {
+      await _secureStorage.delete(key: key);
+    }
+  }
 }

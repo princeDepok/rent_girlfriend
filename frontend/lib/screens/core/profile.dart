@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/services/token_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,16 +14,53 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final TokenStorage _tokenStorage = TokenStorage();
+
+  String? _firstName;
+  String? _lastName;
+  String? _userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
   Future<void> _signOut() async {
-    // Delete stored tokens
     await _secureStorage.delete(key: 'access');
     await _secureStorage.delete(key: 'refresh');
-
-    // Navigate to sign-in screen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const SignIn()),
+    );
+  }
+
+  Future<void> _loadUserData() async {
+    final userData = await _tokenStorage.getUserData();
+    setState(() {
+      _firstName = userData['first_name'];
+      _lastName = userData['last_name'];
+      _userName = userData['username'];
+    });
+  }
+
+  void _showFullImage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.all(10),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: InteractiveViewer(
+              child: Image.asset('assets/images/iqbal.jpeg'),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -30,84 +68,146 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Profile',
+            style:
+                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w600)),
       ),
       body: Column(
         children: [
           Container(
-            color: Colors.purple,
             child: Column(
               children: [
-                SizedBox(height: 20),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage(
-                      'assets/images/iqbal.jpeg'), // Change this to the correct path
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Push Puttichai',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                const SizedBox(height: 20),
+                InkWell(
+                  onTap: () => _showFullImage(context),
+                  child: const CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage('assets/images/iqbal.jpeg'),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 10),
+                Text(
+                  '$_firstName $_lastName',
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  '$_userName',
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
           Expanded(
             child: ListView(
               children: [
-                ListTile(
-                  title: Text('Password'),
-                  trailing: Icon(Icons.chevron_right),
+                _buildMenuItem(
+                  context,
+                  title: 'Edit Profile',
                   onTap: () {
-                    // Navigate to Password screen
+                    // Navigate to Edit Profile screen
                   },
                 ),
                 Divider(),
-                ListTile(
-                  title: Text('Touch ID'),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    // Navigate to Touch ID screen
-                  },
-                ),
-                Divider(),
-                ListTile(
-                  title: Text('Languages'),
-                  trailing: Icon(Icons.chevron_right),
+                _buildMenuItem(
+                  context,
+                  title: 'Languages',
                   onTap: () {
                     // Navigate to Languages screen
                   },
                 ),
                 Divider(),
-                ListTile(
-                  title: Text('App information'),
-                  trailing: Icon(Icons.chevron_right),
+                _buildMenuItem(
+                  context,
+                  title: 'App Information',
                   onTap: () {
-                    // Navigate to App information screen
+                    // Navigate to App Information screen
                   },
                 ),
                 Divider(),
-                ListTile(
-                  title: Text('Customer care'),
-                  trailing: Text('19008989'),
-                  onTap: () {
-                    // Navigate to Customer care screen
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigate to Companion screen
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Go to Companion',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Outfit',
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
                 ),
-                Divider(),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.all(16),
-            child: ElevatedButton(
-              onPressed: _signOut,
-              child: const Text('Sign Out'),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: _signOut,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'Sign Out',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(BuildContext context,
+      {required String title, required VoidCallback onTap}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontFamily: 'Outfit', fontSize: 16),
+          ),
+          GestureDetector(
+            onTap: onTap,
+            child: const Icon(Icons.chevron_right),
           ),
         ],
       ),

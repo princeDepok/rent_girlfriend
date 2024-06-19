@@ -1,7 +1,6 @@
-// lib/screens/home.dart
-
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/screens/core/chat.dart';
 import 'package:frontend/screens/core/profile.dart';
 import 'package:frontend/services/token_storage.dart';
 import 'package:frontend/widgets/menu_bar.dart';
@@ -69,6 +68,20 @@ class _HomeState extends State<Home> {
   ];
 
   int _selectedIndex = 0;
+  String? _username;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userData = await _tokenStorage.getUserData();
+    setState(() {
+      _username = userData['username'];
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -93,15 +106,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    String username = widget.userData['username'] ?? 'N/A';
-
     return Scaffold(
       appBar: _selectedIndex == 0
           ? AppBar(
               backgroundColor: Colors.white,
               elevation: 0,
               title: Text(
-                'Halo, $username',
+                'Halo, ${_username ?? 'N/A'}',
                 style: const TextStyle(
                     color: Colors.black,
                     fontFamily: "Outfit",
@@ -120,7 +131,11 @@ class _HomeState extends State<Home> {
           ? _buildHomeContent()
           : _selectedIndex == 1
               ? _buildOrdersContent()
-              : const ProfileScreen(),
+              : _selectedIndex == 2
+                  ? const Chat()
+                  : _selectedIndex == 3
+                      ? const ProfileScreen()
+                      : const ProfileScreen(),
       bottomNavigationBar: CustomMenuBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,

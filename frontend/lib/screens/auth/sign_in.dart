@@ -118,6 +118,9 @@ class _SignInState extends State<SignIn> {
           if (userDetailsResponse.statusCode == 200) {
             final userData = userDetailsResponse.data;
 
+            // Simpan user data ke secure storage
+            await _tokenStorage.saveUserData(userData);
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => Home(userData: userData)),
