@@ -4,6 +4,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
 
+from .models import Companion, CompanionGallery
+
 User = get_user_model()
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -30,11 +32,38 @@ class UserSerializer(serializers.ModelSerializer):
             birth_date=validated_data['birth_date'],
         )
         return user
-    
+
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date']
+        
+class CompanionGallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanionGallery
+        fields = ['id', 'image']
+
+class CompanionSerializer(serializers.ModelSerializer):
+    user = UserDetailSerializer(read_only=True)
+    galleries = CompanionGallerySerializer(many=True)
+
+    class Meta:
+        model = Companion
+        fields = ['id', 'user', 'bio', 'hobby', 'hourly_rate', 'available', 'location', 'galleries', 'is_approved']
+        read_only_fields = ['is_approved']  # Prevent users from setting is_approved
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        galleries_data = validated_data.pop('galleries')
+        user = request.user
+        user.is_companion = True
+        user.save()
+        companion = Companion.objects.create(user=user, **validated_data)
+        for gallery_data in galleries_data:
+            CompanionGallery.objects.create(companion=companion, **gallery_data)
+        return companion
+
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()

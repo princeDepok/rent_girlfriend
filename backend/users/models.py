@@ -8,11 +8,29 @@ class CustomUser(AbstractUser):
     gender = models.CharField(max_length=10, choices=[('Laki-laki', 'Laki-laki'), ('Wanita', 'Wanita')], null=True, blank=True)
     birth_place = models.CharField(max_length=255, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
-    # is_girlfriend = models.BooleanField(default=False)
-    
+    is_companion = models.BooleanField(default=False)    
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username'] 
     
     def __str__(self):
         return self.email
+
+class Companion(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='companion_profile')
+    bio = models.TextField(null=True, blank=True)
+    hobby = models.CharField(null=True, blank=True, max_length=255)
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    available = models.BooleanField(default=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    is_approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user.username} - Companion'
+    
+class CompanionGallery(models.Model):
+    companion = models.ForeignKey(Companion, related_name='galleries', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='companion_images/')
+    
+    def __str__(self):
+        return f'{self.companion.user.username} - Gallery'

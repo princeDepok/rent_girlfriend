@@ -4,9 +4,10 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import LogoutSerializer, SetNewPasswordSerializer, UserDetailSerializer, UserListSerializer, UserSerializer, LoginSerializer, ResetPasswordSerializer, ValidateOTPSerializer
+from .models import Companion
+from .serializers import CompanionSerializer, LogoutSerializer, SetNewPasswordSerializer, UserDetailSerializer, UserListSerializer, UserSerializer, LoginSerializer, ResetPasswordSerializer, ValidateOTPSerializer
 from .tokens import generate_otp, get_otp
 from .tasks import send_otp_via_email
 from rest_framework.views import APIView
@@ -22,6 +23,21 @@ class UserDetailView(generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer  # Use the new serializer
     lookup_field = 'pk'
     permission_classes = [IsAuthenticated]
+
+class CompanionCreateView(generics.CreateAPIView):
+    queryset = Companion.objects.all()
+    serializer_class = CompanionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class CompanionListView(generics.ListAPIView):
+    serializer_class = CompanionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Companion.objects.filter(is_approved=True)
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -109,3 +125,14 @@ class RefreshTokenView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+    
+class ApproveCompanionView(generics.UpdateAPIView):
+    queryset = Companion.objects.all()
+    serializer_class = CompanionSerializer
+    permission_classes = [IsAdminUser]  # Only admin can approve
+
+    def update(self, request, *args, **kwargs):
+        companion = self.get_object()
+        companion.is_approved = True
+        companion.save()
+        return Response({'status': 'companion approved'}, status=status.HTTP_200_OK)
