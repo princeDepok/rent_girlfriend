@@ -147,7 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text(
+                      child: 
+                       Text(
                         'Go to Companion',
                         style: TextStyle(
                             color: Colors.white,

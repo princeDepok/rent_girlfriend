@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
-import 'package:frontend/screens/core/chat.dart';
+import 'package:frontend/screens/core/chat.dart'; // Ensure this import is correct
+import 'package:frontend/screens/core/list_details.dart';
 import 'package:frontend/screens/core/profile.dart';
 import 'package:frontend/services/token_storage.dart';
 import 'package:frontend/widgets/menu_bar.dart';
@@ -9,7 +10,7 @@ import 'package:frontend/widgets/menu_bar.dart';
 const String popularServices = 'Popular Services';
 const String ordersPage = 'Orders Page';
 const String profilePage = 'Profile Page';
-const String recommendedGamers = 'Recommended Gamers';
+const String recommendedGamers = 'Recommended Friends';
 
 class Home extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -282,7 +283,14 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: GestureDetector(
                     child: ProfileCard(profile: profile),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListDetail(profile: profile),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
