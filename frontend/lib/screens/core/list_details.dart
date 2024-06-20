@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/core/book.dart';
 import 'package:frontend/screens/core/profile.dart';
 import 'package:frontend/screens/home.dart';
 
@@ -66,31 +67,52 @@ class ListDetail extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                decoration: BoxDecoration(
-                  color: profile.gender == 'Male'
-                      ? Color.fromARGB(255, 110, 227, 240)
-                      : Color.fromARGB(255, 248, 157, 188),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      profile.gender == 'Male' ? Icons.male : Icons.female,
-                      color: Colors.black,
+              Row(
+                children: [
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    decoration: BoxDecoration(
+                      color: profile.gender == 'Male'
+                          ? Color.fromARGB(255, 110, 227, 240)
+                          : Color.fromARGB(255, 248, 157, 188),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    SizedBox(width: 5),
-                    Text(
-                      profile.gender,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          profile.gender == 'Male' ? Icons.male : Icons.female,
+                          color: Colors.black,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          profile.gender,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.label, size: 20, color: Colors.purple),
+                      const SizedBox(width: 4),
+                      Text(
+                        profile.description,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
               SizedBox(height: 30),
               Text(
@@ -103,7 +125,7 @@ class ListDetail extends StatelessWidget {
                 ),
               ),
               Text(
-                profile.description,
+                profile.about,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15,
@@ -202,7 +224,12 @@ class ListDetail extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  // _bookProfile(context, profile);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DoctorDetailPage(profile: profile)),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFFF73C3),

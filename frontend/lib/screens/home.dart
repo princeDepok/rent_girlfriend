@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
-import 'package:frontend/screens/core/chat.dart'; // Ensure this import is correct
+import 'package:frontend/screens/core/chat.dart';
+
 import 'package:frontend/screens/core/list_details.dart';
 import 'package:frontend/screens/core/profile.dart';
+import 'package:frontend/screens/core/book.dart'; // Import the doctor detail page
 import 'package:frontend/services/token_storage.dart';
 import 'package:frontend/widgets/menu_bar.dart';
 
@@ -25,45 +27,57 @@ class _HomeState extends State<Home> {
   final TokenStorage _tokenStorage = TokenStorage();
   final List<Profile> profiles = [
     const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
+      imagePath: 'assets/images/natayow.jpeg',
       name: 'Natayow',
       description: 'Charming',
+      about:
+          'Wanita kelahiran Jakarta yang penuh semangat dan selalu mencari pengalaman baru. Dengan minat besar pada film tentang hacking dan kejahatan komputer, Natayow senang mempelajari hal-hal baru dan selalu terbuka untuk tantangan baru. Ramah dan mudah bergaul, Natayow suka berteman dan menjalin hubungan baru.',
       gender: 'Female',
     ),
     const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
+      imagePath: 'assets/images/jamet.jpeg',
       name: 'Rayhan Diffa',
       description: 'Soft Boy',
+      about: 'Aku memang pencinta wanita namun ku bukan buaya',
       gender: 'Lady Boy',
     ),
     const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
-      name: 'Kenny Ekenayake',
+      imagePath: 'assets/images/kennoy.jpeg',
+      name: 'Ahmad Yusuf',
       description: 'Fragile Boy',
-      gender: 'Female',
-    ),
-    const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
-      name: 'Iqbal Saputra',
-      description: 'Handsome Boy',
+      about:
+          'Saya baru mualaf beberapa bulan lalu, saya senang memancing dan saya rapuh. Akan tetapi, saya tidak akan pernah rapuh dan menyerah untuk mencintaimu sepenuh hati',
       gender: 'Male',
     ),
     const Profile(
       imagePath: 'assets/images/iqbal.jpeg',
-      name: 'Swill Sefarty',
-      description: 'Fun',
-      gender: 'Female',
-    ),
-    const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
       name: 'Iqbal Saputra',
       description: 'Handsome Boy',
+      about:
+          'Enthusiast film dan teknologi. Gw selalu penuh energi dan ide-ide kreatif, dan gw sangat menikmati menonton dan mendiskusikan film terutama film romance. Dengan semangat yang tinggi, gw selalu mencari cara untuk meningkatkan pengetahuan.',
+      gender: 'Male',
+    ),
+    const Profile(
+      imagePath: 'assets/images/kennoy2.jpeg',
+      name: 'Kenny Ekenayake',
+      description: 'Fun',
+      about:
+          'Seorang penggemar kuliner yang lahir di BSD Lama. saya selalu aktif mencari restoran baru dan mencoba berbagai masakan. saya juga senang mengeksplorasi berbagai rasa dan berusaha untuk selalu menemukan tempat makan terbaik di kota.',
       gender: 'Female',
     ),
     const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
-      name: 'Swill Sefarty',
+      imagePath: 'assets/images/adrian.jpeg',
+      name: 'Adrian Rachman',
+      description: 'Handsome Boy',
+      about: 'Wibu akut yang selalu pergi ke event wibu',
+      gender: 'Male',
+    ),
+    const Profile(
+      imagePath: 'assets/images/jamet2.jpeg',
+      name: 'Jammedun Hakim',
       description: 'Fun',
+      about:
+          'Berjiwa petualang dan menyukai olahraga luar ruangan. Sering mendaki gunung, bersepeda, dan berlari. Selalu terbuka untuk petualangan baru dan menikmati tantangan fisik yang meningkatkan kebugarannya.',
       gender: 'Male',
     ),
   ];
@@ -133,7 +147,7 @@ class _HomeState extends State<Home> {
           : _selectedIndex == 1
               ? _buildOrdersContent()
               : _selectedIndex == 2
-                  ? const Chat()
+                  ? ChatPage()
                   : _selectedIndex == 3
                       ? const ProfileScreen()
                       : const ProfileScreen(),
@@ -167,7 +181,10 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 20),
             const Text(
               popularServices,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Outfit',
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             GridView.builder(
@@ -180,15 +197,25 @@ class _HomeState extends State<Home> {
               ),
               itemBuilder: (context, index) {
                 final serviceCategories = [
-                  'Mobile Legends',
+                  'SleepCall',
                   'Teman Curhat',
-                  'PUBG',
-                  'Free Fire',
-                  'Ludo King',
+                  'Kondangan',
+                  'Holiday Events',
+                  'Teman Ibadah',
                   'More'
                 ];
+
+                final iconPaths = [
+                  'assets/icons/sleepcall.jpeg',
+                  'assets/icons/tmncurhat2.jpeg',
+                  'assets/icons/kondangan.jpeg',
+                  'assets/icons/holiday.jpeg',
+                  'assets/icons/temanibadah.jpeg',
+                  'assets/icons/more.jpeg'
+                ];
+
                 return ServiceCategory(
-                  iconPath: 'assets/images/iqbal.jpeg',
+                  iconPath: iconPaths[index],
                   label: serviceCategories[index],
                 );
               },
@@ -270,7 +297,10 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 20),
             const Text(
               recommendedGamers,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Outfit",
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             ListView.builder(
@@ -325,12 +355,14 @@ class Profile {
   final String name;
   final String description;
   final String gender;
+  final String about;
 
   const Profile({
     required this.imagePath,
     required this.name,
     required this.description,
     required this.gender,
+    required this.about,
   });
 }
 
@@ -342,7 +374,7 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(9.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -360,8 +392,8 @@ class ProfileCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
             child: Image.asset(
               profile.imagePath,
-              width: 70,
-              height: 70,
+              width: 100,
+              height: 100,
               fit: BoxFit.cover,
             ),
           ),
@@ -383,41 +415,31 @@ class ProfileCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(profile.description),
                     const SizedBox(width: 8),
-                    const Icon(Icons.male, size: 16, color: Colors.blue),
+                    Icon(
+                      profile.gender.toLowerCase() == 'male'
+                          ? Icons.male
+                          : Icons.female,
+                      size: 16,
+                      color: profile.gender.toLowerCase() == 'male'
+                          ? Colors.blue
+                          : Colors.pink,
+                    ),
                     const SizedBox(width: 4),
                     Text(profile.gender),
                   ],
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Tier ready GM-Honor..',
+                Text(
+                  profile.about,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 5,
                 ),
               ],
             ),
-          ),
-          Column(
-            children: [
-              const Icon(Icons.circle, size: 12, color: Colors.green),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.all(4.0),
-                decoration: BoxDecoration(
-                  color: Colors.purple,
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-                child: const Text(
-                  '12"',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       ),

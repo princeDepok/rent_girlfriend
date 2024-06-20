@@ -4,7 +4,7 @@ import 'token_storage.dart';
 
 class ApiService {
   late final Dio _dio;
-  final String _baseUrl = 'http://10.10.162.174:8000/api/';
+  final String _baseUrl = 'http://172.20.10.12:8000/api/';
   final TokenStorage tokenStorage = TokenStorage();
 
   ApiService() {

@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.of(context).pop();
             },
             child: InteractiveViewer(
-              child: Image.asset('assets/images/iqbal.jpeg'),
+              child: Image.asset('assets/images/natayow.jpeg'),
             ),
           ),
         );
@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile',
             style:
-                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w600)),
+                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w800)),
       ),
       body: Column(
         children: [
@@ -147,8 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: 
-                       Text(
+                      child: Text(
                         'Go to Companion',
                         style: TextStyle(
                             color: Colors.white,
