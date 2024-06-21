@@ -89,7 +89,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Lorem ipsum dolor sit amet, consectetur adipi elit, sed do eiusmod tempor incididunt ut laore et dolore magna aliqua. Ut enim ad minim veniam...",
+              widget.profile.about,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 16,
@@ -193,7 +193,52 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                 );
               }),
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 20),
+            Text(
+              "Price",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: List.generate(3, (index) {
+                  return Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedDateIndex = index;
+                          });
+                        },
+                        child: DateChip(
+                          day: [
+                            "Teman Curhat",
+                            "SleepCall",
+                            "kondangan",
+                          ][index],
+                          date: [
+                            "Rp 15.000/jam",
+                            "Rp 30.000/jam",
+                            "Rp 100.000/jam",
+                          ][index],
+                          isSelected: selectedDateIndex == index,
+                        ),
+                      ),
+                      if (index < 2)
+                        SizedBox(
+                            width:
+                                10), // Menambahkan jarak antara elemen kecuali elemen terakhir
+                    ],
+                  );
+                }),
+              ),
+            ),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:frontend/screens/auth/sign_in.dart';
 import 'package:frontend/screens/core/chat.dart';
 
 import 'package:frontend/screens/core/list_details.dart';
+import 'package:frontend/screens/core/order.dart';
 import 'package:frontend/screens/core/profile.dart';
 import 'package:frontend/screens/core/book.dart'; // Import the doctor detail page
 import 'package:frontend/services/token_storage.dart';
@@ -30,15 +31,14 @@ class _HomeState extends State<Home> {
       imagePath: 'assets/images/natayow.jpeg',
       name: 'Natayow',
       description: 'Charming',
-      about:
-          'Wanita kelahiran Jakarta yang penuh semangat dan selalu mencari pengalaman baru. Dengan minat besar pada film tentang hacking dan kejahatan komputer, Natayow senang mempelajari hal-hal baru dan selalu terbuka untuk tantangan baru. Ramah dan mudah bergaul, Natayow suka berteman dan menjalin hubungan baru.',
+      about: 'Gw minat besar pada film tentang hacking dan kejahatan komputer.',
       gender: 'Female',
     ),
     const Profile(
       imagePath: 'assets/images/jamet.jpeg',
       name: 'Rayhan Diffa',
       description: 'Soft Boy',
-      about: 'Aku memang pencinta wanita namun ku bukan buaya',
+      about: 'Aku memang pencinta wanita namun ku bukan buaya.',
       gender: 'Lady Boy',
     ),
     const Profile(
@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
       name: 'Ahmad Yusuf',
       description: 'Fragile Boy',
       about:
-          'Saya baru mualaf beberapa bulan lalu, saya senang memancing dan saya rapuh. Akan tetapi, saya tidak akan pernah rapuh dan menyerah untuk mencintaimu sepenuh hati',
+          'Saya baru mualaf beberapa bulan lalu, saya senang memancing dan saya rapuh.',
       gender: 'Male',
     ),
     const Profile(
@@ -54,30 +54,28 @@ class _HomeState extends State<Home> {
       name: 'Iqbal Saputra',
       description: 'Handsome Boy',
       about:
-          'Enthusiast film dan teknologi. Gw selalu penuh energi dan ide-ide kreatif, dan gw sangat menikmati menonton dan mendiskusikan film terutama film romance. Dengan semangat yang tinggi, gw selalu mencari cara untuk meningkatkan pengetahuan.',
+          'Enthusiast film dan teknologi. Gw selalu penuh energi dan ide-ide kreatif.',
       gender: 'Male',
     ),
     const Profile(
       imagePath: 'assets/images/kennoy2.jpeg',
       name: 'Kenny Ekenayake',
       description: 'Fun',
-      about:
-          'Seorang penggemar kuliner yang lahir di BSD Lama. saya selalu aktif mencari restoran baru dan mencoba berbagai masakan. saya juga senang mengeksplorasi berbagai rasa dan berusaha untuk selalu menemukan tempat makan terbaik di kota.',
+      about: 'Seorang penggemar kuliner yang lahir di BSD Lama.',
       gender: 'Female',
     ),
     const Profile(
       imagePath: 'assets/images/adrian.jpeg',
       name: 'Adrian Rachman',
-      description: 'Handsome Boy',
-      about: 'Wibu akut yang selalu pergi ke event wibu',
+      description: 'Wibu Boy',
+      about: 'Wibu akut yang selalu pergi ke event wibu.',
       gender: 'Male',
     ),
     const Profile(
       imagePath: 'assets/images/jamet2.jpeg',
       name: 'Jammedun Hakim',
       description: 'Fun',
-      about:
-          'Berjiwa petualang dan menyukai olahraga luar ruangan. Sering mendaki gunung, bersepeda, dan berlari. Selalu terbuka untuk petualangan baru dan menikmati tantangan fisik yang meningkatkan kebugarannya.',
+      about: 'Berjiwa petualang dan menyukai olahraga luar ruangan.',
       gender: 'Male',
     ),
   ];
@@ -145,7 +143,7 @@ class _HomeState extends State<Home> {
       body: _selectedIndex == 0
           ? _buildHomeContent()
           : _selectedIndex == 1
-              ? _buildOrdersContent()
+              ? MyBookingsPage()
               : _selectedIndex == 2
                   ? ChatPage()
                   : _selectedIndex == 3
@@ -331,14 +329,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildOrdersContent() {
-    return const Center(
-      child: Text(
-        ordersPage,
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
+  
+  
 
   Widget _buildProfileContent() {
     return const Center(
