@@ -20,7 +20,7 @@ class UserListView(generics.ListAPIView):
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserDetailSerializer  # Use the new serializer
+    serializer_class = UserDetailSerializer
     lookup_field = 'pk'
     permission_classes = [IsAuthenticated]
 
@@ -114,7 +114,6 @@ class LogoutView(APIView):
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         else:
             logger.error("Invalid data: %s", serializer.errors)
-            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response({"error": "halo"}, status=status.HTTP_400_BAD_REQUEST)
 
 class RefreshTokenView(APIView):
@@ -125,11 +124,11 @@ class RefreshTokenView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-    
+
 class ApproveCompanionView(generics.UpdateAPIView):
     queryset = Companion.objects.all()
     serializer_class = CompanionSerializer
-    permission_classes = [IsAdminUser]  # Only admin can approve
+    permission_classes = [IsAdminUser]
 
     def update(self, request, *args, **kwargs):
         companion = self.get_object()

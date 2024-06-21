@@ -220,80 +220,80 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.red[100],
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Sure Win',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        const Text('Refund if you don’t win'),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Go'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Flash Order Rizzzz',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text('Open Now'),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.purple[100],
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Host Order Service',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text('Open Now'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            // const SizedBox(height: 20),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Container(
+            //         padding: const EdgeInsets.all(16.0),
+            //         decoration: BoxDecoration(
+            //           color: Colors.red[100],
+            //           borderRadius: BorderRadius.circular(16),
+            //         ),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             const Text(
+            //               'Sure Win',
+            //               style: TextStyle(
+            //                   fontSize: 16, fontWeight: FontWeight.bold),
+            //             ),
+            //             const Text('Refund if you don’t win'),
+            //             const SizedBox(height: 10),
+            //             ElevatedButton(
+            //               onPressed: () {},
+            //               child: const Text('Go'),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //     const SizedBox(width: 10),
+            //     Expanded(
+            //       child: Column(
+            //         children: [
+            //           Container(
+            //             padding: const EdgeInsets.all(16.0),
+            //             decoration: BoxDecoration(
+            //               color: Colors.blue[100],
+            //               borderRadius: BorderRadius.circular(16),
+            //             ),
+            //             child: const Column(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               children: [
+            //                 Text(
+            //                   'Flash Order Rizzzz',
+            //                   style: TextStyle(
+            //                       fontSize: 16, fontWeight: FontWeight.bold),
+            //                 ),
+            //                 Text('Open Now'),
+            //               ],
+            //             ),
+            //           ),
+            //           const SizedBox(height: 10),
+            //           Container(
+            //             padding: const EdgeInsets.all(16.0),
+            //             decoration: BoxDecoration(
+            //               color: Colors.purple[100],
+            //               borderRadius: BorderRadius.circular(16),
+            //             ),
+            //             child: const Column(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               children: [
+            //                 Text(
+            //                   'Host Order Service',
+            //                   style: TextStyle(
+            //                       fontSize: 16, fontWeight: FontWeight.bold),
+            //                 ),
+            //                 Text('Open Now'),
+            //               ],
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
             const SizedBox(height: 20),
             const Text(
               recommendedGamers,

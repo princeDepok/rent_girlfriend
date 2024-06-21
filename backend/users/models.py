@@ -8,6 +8,7 @@ class CustomUser(AbstractUser):
     gender = models.CharField(max_length=10, choices=[('Laki-laki', 'Laki-laki'), ('Wanita', 'Wanita')], null=True, blank=True)
     birth_place = models.CharField(max_length=255, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    picture = models.ImageField(null=True, blank=True, upload_to='user_images/')
     is_companion = models.BooleanField(default=False)    
 
     USERNAME_FIELD = 'email'
@@ -20,7 +21,7 @@ class Companion(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='companion_profile')
     bio = models.TextField(null=True, blank=True)
     hobby = models.CharField(null=True, blank=True, max_length=255)
-    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    hourly_rate = models.IntegerField()
     available = models.BooleanField(default=True)
     location = models.CharField(max_length=255, null=True, blank=True)
     is_approved = models.BooleanField(default=False)

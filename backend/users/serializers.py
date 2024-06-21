@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
-
 from .models import Companion, CompanionGallery
 
 User = get_user_model()
@@ -36,8 +35,8 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date']
-        
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date', 'is_companion']
+
 class CompanionGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanionGallery
@@ -45,25 +44,28 @@ class CompanionGallerySerializer(serializers.ModelSerializer):
 
 class CompanionSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer(read_only=True)
-    galleries = CompanionGallerySerializer(many=True)
 
     class Meta:
         model = Companion
-        fields = ['id', 'user', 'bio', 'hobby', 'hourly_rate', 'available', 'location', 'galleries', 'is_approved']
-        read_only_fields = ['is_approved']  # Prevent users from setting is_approved
+        fields = ['id', 'user', 'bio', 'hobby', 'hourly_rate', 'available', 'location', 'is_approved']
+        read_only_fields = ['is_approved']
 
     def create(self, validated_data):
         request = self.context.get('request')
-        galleries_data = validated_data.pop('galleries')
         user = request.user
         user.is_companion = True
         user.save()
         companion = Companion.objects.create(user=user, **validated_data)
-        for gallery_data in galleries_data:
-            CompanionGallery.objects.create(companion=companion, **gallery_data)
         return companion
 
-
+    def update(self, instance, validated_data):
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.hobby = validated_data.get('hobby', instance.hobby)
+        instance.hourly_rate = validated_data.get('hourly_rate', instance.hourly_rate)
+        instance.available = validated_data.get('available', instance.available)
+        instance.location = validated_data.get('location', instance.location)
+        instance.save()
+        return instance
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -95,8 +97,6 @@ class ValidateOTPSerializer(serializers.Serializer):
 class SetNewPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     new_password = serializers.CharField()
-
-from rest_framework import serializers
 
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()

@@ -1,9 +1,10 @@
-// lib/screens/core/profile.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/screens/core/companion_dashboard.dart';
+import 'package:frontend/screens/core/companion_register.dart';
 import 'package:frontend/services/token_storage.dart';
+import 'package:frontend/services/api_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,10 +16,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   final TokenStorage _tokenStorage = TokenStorage();
+  final ApiService _apiService = ApiService();
 
   String? _firstName;
   String? _lastName;
   String? _userName;
+  bool _isCompanion = false;
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _firstName = userData['first_name'];
       _lastName = userData['last_name'];
       _userName = userData['username'];
+      _isCompanion = userData['is_companion'] == 'true';
     });
   }
 
@@ -64,13 +68,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> _navigateToCompanionScreen() async {
+    if (_isCompanion) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const CompanionDashboard()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const CompanionRegister()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile',
             style:
-                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w800)),
+                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w700)),
       ),
       body: Column(
         children: [
@@ -136,9 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: GestureDetector(
-                    onTap: () {
-                      // Navigate to Companion screen
-                    },
+                    onTap: _navigateToCompanionScreen,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       width: double.infinity,
@@ -147,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Go to Companion',
                         style: TextStyle(
                             color: Colors.white,
