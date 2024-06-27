@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
+import 'package:frontend/screens/auth/sign_up.dart';
 import 'package:frontend/screens/core/companion_dashboard.dart';
 import 'package:frontend/screens/core/companion_register.dart';
+import 'package:frontend/screens/home.dart';
 import 'package:frontend/services/token_storage.dart';
 import 'package:frontend/services/api_service.dart';
 
@@ -22,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _lastName;
   String? _userName;
   bool _isCompanion = false;
+  bool _isUserDataLoaded = false;
 
   @override
   void initState() {
@@ -30,11 +33,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
-    await _secureStorage.delete(key: 'access');
-    await _secureStorage.delete(key: 'refresh');
+    await _tokenStorage.clearUserData();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const SignIn()),
+      MaterialPageRoute(builder: (context) => const Home()), // Navigate to Home
     );
   }
 
@@ -45,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _lastName = userData['last_name'];
       _userName = userData['username'];
       _isCompanion = userData['is_companion'] == 'true';
+      _isUserDataLoaded = true;
     });
   }
 
@@ -60,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.of(context).pop();
             },
             child: InteractiveViewer(
-              child: Image.asset('assets/images/natayow.jpeg'),
+              child: Image.asset('assets/images/iqbal.jpeg'),
             ),
           ),
         );
@@ -82,131 +85,213 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _navigateToSignUp() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SignUp()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile',
-            style:
-                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w700)),
+            style: TextStyle(
+                fontFamily: 'Outfit', fontWeight: FontWeight.w700)),
       ),
-      body: Column(
-        children: [
-          Container(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                InkWell(
-                  onTap: () => _showFullImage(context),
-                  child: const CircleAvatar(
-                    radius: 60,
-                    backgroundImage: AssetImage('assets/images/iqbal.jpeg'),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '$_firstName $_lastName',
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  '$_userName',
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w400),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              children: [
-                _buildMenuItem(
-                  context,
-                  title: 'Edit Profile',
-                  onTap: () {
-                    // Navigate to Edit Profile screen
-                  },
-                ),
-                Divider(),
-                _buildMenuItem(
-                  context,
-                  title: 'Languages',
-                  onTap: () {
-                    // Navigate to Languages screen
-                  },
-                ),
-                Divider(),
-                _buildMenuItem(
-                  context,
-                  title: 'App Information',
-                  onTap: () {
-                    // Navigate to App Information screen
-                  },
-                ),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: GestureDetector(
-                    onTap: _navigateToCompanionScreen,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(8),
+      body: _isUserDataLoaded
+          ? (_firstName != null && _lastName != null && _userName != null)
+              ? Column(
+                  children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          InkWell(
+                            onTap: () => _showFullImage(context),
+                            child: const CircleAvatar(
+                              radius: 60,
+                              backgroundImage:
+                                  AssetImage('assets/images/iqbal.jpeg'),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            '$_firstName $_lastName',
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontFamily: 'Outfit',
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            '$_userName',
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Outfit',
+                                fontWeight: FontWeight.w400),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      child: const Text(
-                        'Go to Companion',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                    ),
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          _buildMenuItem(
+                            context,
+                            title: 'Edit Profile',
+                            onTap: () {
+                              // Navigate to Edit Profile screen
+                            },
+                          ),
+                          Divider(),
+                          _buildMenuItem(
+                            context,
+                            title: 'Languages',
+                            onTap: () {
+                              // Navigate to Languages screen
+                            },
+                          ),
+                          Divider(),
+                          _buildMenuItem(
+                            context,
+                            title: 'App Information',
+                            onTap: () {
+                              // Navigate to App Information screen
+                            },
+                          ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: GestureDetector(
+                              onTap: _navigateToCompanionScreen,
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  'Go to Companion',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Outfit',
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: _signOut,
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12),
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'Sign Out',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'You are not logged in.',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
                             fontFamily: 'Outfit',
-                            fontWeight: FontWeight.w600),
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignIn()),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text(
+                              'Sign In',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Outfit',
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: _navigateToSignUp,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Outfit',
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                )
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: _signOut,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      'Sign Out',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

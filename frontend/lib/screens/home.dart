@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
 import 'package:frontend/screens/core/chat.dart';
-
 import 'package:frontend/screens/core/list_details.dart';
 import 'package:frontend/screens/core/order.dart';
 import 'package:frontend/screens/core/profile.dart';
@@ -10,15 +9,15 @@ import 'package:frontend/services/token_storage.dart';
 import 'package:frontend/widgets/menu_bar.dart';
 
 // Const for strings
-const String popularServices = 'Popular Services';
+const String popularServices = 'Services Paling Laku';
 const String ordersPage = 'Orders Page';
 const String profilePage = 'Profile Page';
-const String recommendedGamers = 'Recommended Friends';
+const String recommendedGamers = 'Paling Banyak Digandrungi';
 
 class Home extends StatefulWidget {
-  final Map<String, dynamic> userData;
+  final Map<String, dynamic>? userData;
 
-  const Home({Key? key, required this.userData}) : super(key: key);
+  const Home({Key? key, this.userData}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -92,7 +91,7 @@ class _HomeState extends State<Home> {
   Future<void> _loadUserData() async {
     final userData = await _tokenStorage.getUserData();
     setState(() {
-      _username = userData['username'];
+      _username = userData['username'] ?? 'Guest';
     });
   }
 
@@ -104,7 +103,7 @@ class _HomeState extends State<Home> {
 
   Future<void> _signOut() async {
     try {
-      await _tokenStorage.deleteTokens();
+      await _tokenStorage.clearUserData();
       _navigateToSignIn();
     } catch (e) {
       // Handle error, e.g., show a Snackbar
@@ -125,7 +124,7 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.white,
               elevation: 0,
               title: Text(
-                'Halo, ${_username ?? 'N/A'}',
+                'Halo, ${_username ?? 'Guest'}',
                 style: const TextStyle(
                     color: Colors.black,
                     fontFamily: "Outfit",
@@ -218,80 +217,6 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
-            // const SizedBox(height: 20),
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: Container(
-            //         padding: const EdgeInsets.all(16.0),
-            //         decoration: BoxDecoration(
-            //           color: Colors.red[100],
-            //           borderRadius: BorderRadius.circular(16),
-            //         ),
-            //         child: Column(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: [
-            //             const Text(
-            //               'Sure Win',
-            //               style: TextStyle(
-            //                   fontSize: 16, fontWeight: FontWeight.bold),
-            //             ),
-            //             const Text('Refund if you don’t win'),
-            //             const SizedBox(height: 10),
-            //             ElevatedButton(
-            //               onPressed: () {},
-            //               child: const Text('Go'),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //     const SizedBox(width: 10),
-            //     Expanded(
-            //       child: Column(
-            //         children: [
-            //           Container(
-            //             padding: const EdgeInsets.all(16.0),
-            //             decoration: BoxDecoration(
-            //               color: Colors.blue[100],
-            //               borderRadius: BorderRadius.circular(16),
-            //             ),
-            //             child: const Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               children: [
-            //                 Text(
-            //                   'Flash Order Rizzzz',
-            //                   style: TextStyle(
-            //                       fontSize: 16, fontWeight: FontWeight.bold),
-            //                 ),
-            //                 Text('Open Now'),
-            //               ],
-            //             ),
-            //           ),
-            //           const SizedBox(height: 10),
-            //           Container(
-            //             padding: const EdgeInsets.all(16.0),
-            //             decoration: BoxDecoration(
-            //               color: Colors.purple[100],
-            //               borderRadius: BorderRadius.circular(16),
-            //             ),
-            //             child: const Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               children: [
-            //                 Text(
-            //                   'Host Order Service',
-            //                   style: TextStyle(
-            //                       fontSize: 16, fontWeight: FontWeight.bold),
-            //                 ),
-            //                 Text('Open Now'),
-            //               ],
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
             const SizedBox(height: 20),
             const Text(
               recommendedGamers,
@@ -328,9 +253,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-  
-  
 
   Widget _buildProfileContent() {
     return const Center(

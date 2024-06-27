@@ -8,12 +8,23 @@ class TokenStorage {
     await _secureStorage.write(key: 'refresh', value: refreshToken);
   }
 
-  Future<void> saveAccessToken(String accessToken) async {
-    await _secureStorage.write(key: 'access', value: accessToken);
+  Future<void> saveUserId(String userId) async {
+    await _secureStorage.write(key: 'user_id', value: userId);
   }
 
-  Future<void> saveUserId(String userId) async {
-    await _secureStorage.write(key: 'userId', value: userId);
+  Future<Map<String, dynamic>> getUserData() async {
+    final userData = await _secureStorage.readAll();
+    return userData;
+  }
+
+  Future<void> saveUserData(Map<String, dynamic> userData) async {
+    for (var entry in userData.entries) {
+      await _secureStorage.write(key: entry.key, value: entry.value.toString());
+    }
+  }
+
+  Future<void> clearUserData() async {
+    await _secureStorage.deleteAll();
   }
 
   Future<String?> getAccessToken() async {
@@ -24,30 +35,8 @@ class TokenStorage {
     return await _secureStorage.read(key: 'refresh');
   }
 
-  Future<String?> getUserId() async {
-    return await _secureStorage.read(key: 'userId');
-  }
-
   Future<void> deleteTokens() async {
     await _secureStorage.delete(key: 'access');
     await _secureStorage.delete(key: 'refresh');
-  }
-
-  Future<void> saveUserData(Map<String, dynamic> userData) async {
-    for (var key in userData.keys) {
-      await _secureStorage.write(key: key, value: userData[key].toString());
-    }
-  }
-
-  Future<Map<String, String>> getUserData() async {
-    final allValues = await _secureStorage.readAll();
-    return allValues;
-  }
-
-  Future<void> deleteUserData() async {
-    final allValues = await _secureStorage.readAll();
-    for (var key in allValues.keys) {
-      await _secureStorage.delete(key: key);
-    }
   }
 }

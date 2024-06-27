@@ -15,7 +15,7 @@ class UserListSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date')
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'gender', 'birth_date')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -25,9 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            phone_number=validated_data['phone_number'],
             gender=validated_data['gender'],
-            birth_place=validated_data['birth_place'],
             birth_date=validated_data['birth_date'],
         )
         return user
@@ -35,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'gender', 'birth_place', 'birth_date', 'is_companion']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'gender', 'birth_date', 'is_companion']
 
 class CompanionGallerySerializer(serializers.ModelSerializer):
     class Meta:

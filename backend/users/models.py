@@ -4,9 +4,7 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, null=True, blank=True)
     gender = models.CharField(max_length=10, choices=[('Laki-laki', 'Laki-laki'), ('Wanita', 'Wanita')], null=True, blank=True)
-    birth_place = models.CharField(max_length=255, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     picture = models.ImageField(null=True, blank=True, upload_to='user_images/')
     is_companion = models.BooleanField(default=False)    
