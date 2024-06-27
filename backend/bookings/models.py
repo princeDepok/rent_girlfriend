@@ -1,7 +1,6 @@
 # booking/models.py
 from django.db import models
 from django.conf import settings
-from users.models import Companion
 
 class Service(models.Model):
     name = models.CharField(max_length=100)
@@ -17,7 +16,7 @@ class Package(models.Model):
         (9, '9 hours'),
         (12, '12 hours'),
     ]
-    companion = models.ForeignKey(Companion, related_name='packages', on_delete=models.CASCADE)
+    companion = models.ForeignKey('users.Companion', related_name='packages', on_delete=models.CASCADE)
     duration = models.IntegerField(choices=duration_choices)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     extra_hour_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -27,7 +26,7 @@ class Package(models.Model):
 
 class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    companion = models.ForeignKey(Companion, on_delete=models.CASCADE)
+    companion = models.ForeignKey('users.Companion', on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     start_time = models.DateTimeField()

@@ -14,8 +14,6 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {
-    'firstName': TextEditingController(),
-    'lastName': TextEditingController(),
     'userName': TextEditingController(),
     'email': TextEditingController(),
     'password': TextEditingController(),
@@ -81,8 +79,6 @@ class _SignUpState extends State<SignUp> {
       });
 
       final data = {
-        'first_name': _controllers['firstName']!.text,
-        'last_name': _controllers['lastName']!.text,
         'username': _controllers['userName']!.text,
         'email': _controllers['email']!.text,
         'password': _controllers['password']!.text,
@@ -201,36 +197,6 @@ class _SignUpState extends State<SignUp> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 32),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField(
-                                'firstName',
-                                'First Name',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your first name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _buildTextField(
-                                'lastName',
-                                'Last Name',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your last name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
                         _buildTextField(
                           'userName',
                           'Username',

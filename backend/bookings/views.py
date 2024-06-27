@@ -7,7 +7,7 @@ from .serializers import PackageSerializer, BookingSerializer, ReviewSerializer,
 class PackageListView(generics.ListAPIView):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 class BookingCreateView(generics.CreateAPIView):
     queryset = Booking.objects.all()

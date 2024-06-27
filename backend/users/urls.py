@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     ApproveCompanionView, CompanionCreateView, CompanionListView, LogoutView, RegisterView, LoginView, ResetPasswordView, 
-    ValidateOTPView, SetNewPasswordView, UserListView, UserDetailView, RefreshTokenView
+    ValidateOTPView, SetNewPasswordView, UserListView, UserDetailView, RefreshTokenView, CheckApprovalStatusView
 )
 
 urlpatterns = [
@@ -17,4 +17,5 @@ urlpatterns = [
     path('companion/register/', CompanionCreateView.as_view(), name='companion-register'),
     path('companions/', CompanionListView.as_view(), name='companions-list'),
     path('refresh-token/', RefreshTokenView.as_view(), name='refresh-token'),
+    path('companion/check-approval/', CheckApprovalStatusView.as_view(), name='check-approval-status'),
 ]

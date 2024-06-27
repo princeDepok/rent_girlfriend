@@ -1,4 +1,3 @@
-# users/views.py
 import logging
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -32,9 +31,10 @@ class CompanionCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 class CompanionListView(generics.ListAPIView):
     serializer_class = CompanionSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Companion.objects.filter(is_approved=True)
@@ -98,6 +98,7 @@ class SetNewPasswordView(generics.GenericAPIView):
         user.set_password(new_password)
         user.save()
         return Response({"message": "Password reset successful"}, status=status.HTTP_200_OK)
+
 class LogoutView(APIView):
     def post(self, request):
         logger.debug("Logout request received with data: %s", request.data)
@@ -135,3 +136,13 @@ class ApproveCompanionView(generics.UpdateAPIView):
         companion.is_approved = True
         companion.save()
         return Response({'status': 'companion approved'}, status=status.HTTP_200_OK)
+
+class CheckApprovalStatusView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.is_companion:
+            companion_profile = user.companion_profile
+            return Response({'is_approved': companion_profile.is_approved})
+        return Response({'is_approved': False})

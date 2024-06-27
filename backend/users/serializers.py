@@ -1,8 +1,6 @@
-# users/serializers.py
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.utils.translation import gettext_lazy as _
+from bookings.models import Service
 from .models import Companion, CompanionGallery
 
 User = get_user_model()
@@ -10,12 +8,12 @@ User = get_user_model()
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email'] 
+        fields = ['id', 'username', 'email']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'gender', 'birth_date')
+        fields = ('id', 'username', 'email', 'password', 'gender', 'birth_date')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -23,8 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
             gender=validated_data['gender'],
             birth_date=validated_data['birth_date'],
         )
@@ -33,35 +29,54 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'gender', 'birth_date', 'is_companion']
+        fields = ['id', 'username', 'email', 'gender', 'birth_date', 'is_companion']
 
 class CompanionGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanionGallery
         fields = ['id', 'image']
 
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['id', 'name', 'description']
+
 class CompanionSerializer(serializers.ModelSerializer):
-    user = UserDetailSerializer(read_only=True)
+    user = serializers.ReadOnlyField(source='user.username')
+    # images = serializers.ImageField(required=False)  # Comment out image field
+    services_offered = serializers.JSONField()
 
     class Meta:
         model = Companion
-        fields = ['id', 'user', 'bio', 'hobby', 'hourly_rate', 'available', 'location', 'is_approved']
+        fields = ['id', 'user', 'fullname', 'id_card', 'phone_number', 'bank_account', 'bank_account_number', 'bio', 'tags', 'experience', 'services_offered', 'instagram_account', 'available', 'location', 'is_approved']
         read_only_fields = ['is_approved']
 
     def create(self, validated_data):
+        services_data = validated_data.pop('services_offered')
         request = self.context.get('request')
         user = request.user
         user.is_companion = True
         user.save()
         companion = Companion.objects.create(user=user, **validated_data)
+        companion.services_offered = services_data
+        companion.save()
         return companion
 
     def update(self, instance, validated_data):
+        services_data = validated_data.pop('services_offered')
+        instance.fullname = validated_data.get('fullname', instance.fullname)
+        instance.id_card = validated_data.get('id_card', instance.id_card)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.bank_account = validated_data.get('bank_account', instance.bank_account)
+        instance.bank_account_number = validated_data.get('bank_account_number', instance.bank_account_number)
         instance.bio = validated_data.get('bio', instance.bio)
-        instance.hobby = validated_data.get('hobby', instance.hobby)
-        instance.hourly_rate = validated_data.get('hourly_rate', instance.hourly_rate)
+        instance.tags = validated_data.get('tags', instance.tags)
+        instance.experience = validated_data.get('experience', instance.experience)
+        instance.instagram_account = validated_data.get('instagram_account', instance.instagram_account)
+        # instance.images = validated_data.get('images', instance.images)  # Comment out image field
         instance.available = validated_data.get('available', instance.available)
         instance.location = validated_data.get('location', instance.location)
+        instance.services_offered = services_data
         instance.save()
         return instance
 

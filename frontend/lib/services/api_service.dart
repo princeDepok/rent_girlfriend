@@ -4,7 +4,7 @@ import 'token_storage.dart';
 
 class ApiService {
   late final Dio _dio;
-  final String _baseUrl = 'http://192.168.0.5:8000/api/';
+  final String _baseUrl = 'http://192.168.100.126:8000/api/';
   final TokenStorage tokenStorage = TokenStorage();
 
   ApiService() {
@@ -90,6 +90,20 @@ class ApiService {
     }
   }
 
+  Future<Response> registerCompanion(Map<String, dynamic> data) async {
+    String? accessToken = await tokenStorage.getAccessToken();
+    return await _dio.post(
+      'companion/register/',
+      data: data,
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $accessToken',
+        },
+      ),
+    );
+  }
+
   Response _handleError(dynamic e) {
     if (e is DioException) {
       print('DioError: ${e.message}');
@@ -102,24 +116,6 @@ class ApiService {
     } else {
       print('Unexpected error: $e');
       return Response(requestOptions: RequestOptions(path: ''));
-    }
-  }
-
-  Future<Response> registerCompanion(Map<String, dynamic> data) async {
-    try {
-      String? accessToken = await tokenStorage.getAccessToken();
-      return await _dio.post(
-        'companion/register/',
-        data: data,
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
-      );
-    } catch (e) {
-      return _handleError(e);
     }
   }
 }

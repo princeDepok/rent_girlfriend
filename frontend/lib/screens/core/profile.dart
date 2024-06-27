@@ -20,9 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TokenStorage _tokenStorage = TokenStorage();
   final ApiService _apiService = ApiService();
 
-  String? _firstName;
-  String? _lastName;
   String? _userName;
+  String? _gender;
   bool _isCompanion = false;
   bool _isUserDataLoaded = false;
 
@@ -43,12 +42,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadUserData() async {
     final userData = await _tokenStorage.getUserData();
     setState(() {
-      _firstName = userData['first_name'];
-      _lastName = userData['last_name'];
       _userName = userData['username'];
+      _gender = userData['gender'];
       _isCompanion = userData['is_companion'] == 'true';
       _isUserDataLoaded = true;
     });
+  }
+
+  String get genderText {
+    if (_gender == 'Laki-laki') {
+      return 'Lanang';
+    } else if (_gender == 'Wanita') {
+      return 'Wedok';
+    } else {
+      return 'Unknown';
+    }
+  }
+
+  IconData get genderIcon {
+    if (_gender == 'Laki-laki') {
+      return Icons.male;
+    } else if (_gender == 'Wanita') {
+      return Icons.female;
+    } else {
+      return Icons.help;
+    }
   }
 
   void _showFullImage(BuildContext context) {
@@ -57,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.all(10),
+          insetPadding: const EdgeInsets.all(10),
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
@@ -101,7 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fontFamily: 'Outfit', fontWeight: FontWeight.w700)),
       ),
       body: _isUserDataLoaded
-          ? (_firstName != null && _lastName != null && _userName != null)
+          ? (_userName != null)
               ? Column(
                   children: [
                     Container(
@@ -118,20 +136,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            '$_firstName $_lastName',
+                            _userName!,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                                 fontFamily: 'Outfit',
                                 fontWeight: FontWeight.w600),
                           ),
-                          Text(
-                            '$_userName',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.w400),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(genderIcon, color: Colors.black),
+                              const SizedBox(width: 8),
+                              Text(
+                                genderText,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 20),
                         ],
@@ -147,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               // Navigate to Edit Profile screen
                             },
                           ),
-                          Divider(),
+                          const Divider(),
                           _buildMenuItem(
                             context,
                             title: 'Languages',
@@ -155,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               // Navigate to Languages screen
                             },
                           ),
-                          Divider(),
+                          const Divider(),
                           _buildMenuItem(
                             context,
                             title: 'App Information',
@@ -163,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               // Navigate to App Information screen
                             },
                           ),
-                          Divider(),
+                          const Divider(),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: GestureDetector(
@@ -289,7 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 )
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(),
             ),
     );
