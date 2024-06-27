@@ -1,6 +1,11 @@
 # booking/serializers.py
 from rest_framework import serializers
-from .models import Package, Booking, Review
+from .models import Package, Booking, Review, Service
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['id', 'name', 'description']
 
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,17 +15,9 @@ class PackageSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'user', 'companion', 'package', 'start_time', 'end_time', 'is_ongoing', 'is_completed']
+        fields = ['id', 'user', 'companion', 'package', 'service', 'start_time', 'end_time', 'location', 'is_ongoing', 'is_completed']
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='booking.user.username')
-    companion = serializers.ReadOnlyField(source='booking.companion.user.username')
-
     class Meta:
         model = Review
-        fields = ['id', 'booking', 'rating', 'comment', 'created_at', 'user', 'companion']
-
-    def validate(self, attrs):
-        if attrs['booking'].is_completed == False:
-            raise serializers.ValidationError("Cannot review before booking is completed.")
-        return attrs
+        fields = ['id', 'booking', 'rating', 'comment', 'created_at']

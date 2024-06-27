@@ -3,6 +3,13 @@ from django.db import models
 from django.conf import settings
 from users.models import Companion
 
+class Service(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 class Package(models.Model):
     duration_choices = [
         (3, '3 hours'),
@@ -22,8 +29,10 @@ class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     companion = models.ForeignKey(Companion, on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    location = models.CharField(max_length=255, blank=True, null=True)  # For services needing location
     is_ongoing = models.BooleanField(default=True)
     is_completed = models.BooleanField(default=False)
 
