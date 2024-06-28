@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_up.dart';
+import 'package:frontend/screens/core/list_chat.dart';
 import 'package:frontend/screens/splash.dart';
 
 String? jwt;

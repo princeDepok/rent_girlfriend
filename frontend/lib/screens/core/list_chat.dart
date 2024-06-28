@@ -1,0 +1,146 @@
+import 'package:flutter/material.dart';
+import 'package:frontend/screens/core/chat.dart';
+import 'package:frontend/screens/core/listaja.dart';
+
+class ListChat extends StatefulWidget {
+  const ListChat({super.key});
+
+  @override
+  State<ListChat> createState() => _ListChatState();
+}
+
+class _ListChatState extends State<ListChat> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'Messages',
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: "Outfit",
+              fontWeight: FontWeight.w600),
+        ),
+      ),
+      body: Center(
+        child: MessageList(),
+      ),
+    );
+  }
+}
+
+class MessageList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: 1,
+          itemBuilder: (context, index) {
+            return UserMessageContainer();
+          },
+        ),
+        // ListView.builder(
+        //   shrinkWrap: true,
+        //   physics: NeverScrollableScrollPhysics(),
+        //   itemCount: 10,
+        //   itemBuilder: (context, index) {
+        //     return UserMessageContainer();
+        //   },
+        // ),
+      ],
+    );
+  }
+}
+
+class UserMessageContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatPage()),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        margin: EdgeInsets.symmetric(vertical: 4.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage(
+                  'assets/images/kennoy.jpeg'), // Replace with the actual image URL
+              radius: 25.0,
+            ),
+            SizedBox(width: 10.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Ahmad Yusuf',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  Text(
+                    'Really? I thought you mi...',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '04:29 PM',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12.0,
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '1',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

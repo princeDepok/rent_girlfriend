@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
 
-
 class MyBookingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back),
-        title: Text('My bookings'),
-        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'Orders',
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: "Outfit",
+              fontWeight: FontWeight.w600),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             BookingCard(
-              type: 'TOUR PLAN',
-              title: 'Tur Pulau Wayag Raja Ampat',
-              date: '13 Mei 2023 - 15 Mei 2023 - 3 Days',
+              type: 'Paket Kondangan',
+              title: 'Iqbal Saputra',
+              date: '13 Mei 2024 - 14 Mei 2024 - 1 Day',
               status: 'PAID',
               statusColor: Colors.green,
               imageUrl: 'assets/images/iqbal.jpeg',
             ),
             BookingCard(
-              type: 'STAYCATION',
-              title: 'The Apurva Kempinski Bali',
-              date: '20 June 2023 - 27 June 2023 - 6 Nights',
+              type: 'SleepCall',
+              title: 'Ahmad Yusuf',
+              date: '20 June 2024 - 20 June 2024 - 3 Hours',
               status: 'NOT PAID',
               statusColor: Colors.red,
-              imageUrl: 'assets/images/iqbal.jpeg',
+              imageUrl: 'assets/images/kennoy.jpeg',
             ),
             SizedBox(height: 20),
             Text(
@@ -82,7 +87,7 @@ class BookingCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.purple,
+              color: Color(0xFFFF73C3),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(15),
                 topRight: Radius.circular(15),
@@ -96,14 +101,15 @@ class BookingCard extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  'Dolanku',
+                  '',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
           ),
           ListTile(
-            leading: Image.asset(imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+            leading:
+                Image.asset(imageUrl, width: 50, height: 50, fit: BoxFit.cover),
             title: Text(title),
             subtitle: Text(date),
             trailing: Column(
@@ -111,7 +117,8 @@ class BookingCard extends StatelessWidget {
               children: [
                 Text(
                   status,
-                  style: TextStyle(color: statusColor, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: statusColor, fontWeight: FontWeight.bold),
                 ),
                 Icon(Icons.arrow_forward_ios),
               ],

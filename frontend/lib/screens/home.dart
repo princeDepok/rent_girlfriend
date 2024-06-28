@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
 import 'package:frontend/screens/core/chat.dart';
+import 'package:frontend/screens/core/list_chat.dart';
 import 'package:frontend/screens/core/list_details.dart';
 import 'package:frontend/screens/core/order.dart';
 import 'package:frontend/screens/core/profile.dart';
@@ -144,7 +145,7 @@ class _HomeState extends State<Home> {
           : _selectedIndex == 1
               ? MyBookingsPage()
               : _selectedIndex == 2
-                  ? ChatPage()
+                  ? ListChat()
                   : _selectedIndex == 3
                       ? const ProfileScreen()
                       : const ProfileScreen(),

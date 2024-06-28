@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/core/paymentpage/payment.dart';
 import 'package:frontend/screens/core/profile.dart';
 import 'package:frontend/screens/home.dart';
 
@@ -263,7 +264,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                 onPressed: () {
                   // Navigator.push(
                   //   context,
-                  //   MaterialPageRoute(builder: (context) => DoctorDetailPage(profile: profile)),
+                  //   MaterialPageRoute(builder: (context) => PaymentScreen()),
                   // );
                 },
                 style: ElevatedButton.styleFrom(
