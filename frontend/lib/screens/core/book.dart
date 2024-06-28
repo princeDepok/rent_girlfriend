@@ -14,9 +14,7 @@ class DoctorDetailPage extends StatefulWidget {
 
 class _DoctorDetailPageState extends State<DoctorDetailPage> {
   int selectedDateIndex = 2; // Default selected date index
-  int selectedTimeIndex = 4;
-
-  get profile => null; // Default selected time index
+  int selectedTimeIndex = 4; // Default selected time index
 
   @override
   Widget build(BuildContext context) {
@@ -262,10 +260,15 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => PaymentScreen()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentScreen(
+                        profileName: widget.profile.name,
+                        imagePath: widget.profile.imagePath,
+                      ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFFF73C3),

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/core/paymentpage/confirmpayment.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final String profileName;
+  final String imagePath;
+
+  const PaymentScreen(
+      {super.key, required this.profileName, required this.imagePath});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -14,14 +19,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
       backgroundColor: const Color.fromARGB(255, 236, 236, 236),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 54),
+          Padding(
+            padding: const EdgeInsets.only(top: 54),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Tur Pulau Wayag Raja Ampat",
-                  style: TextStyle(
+                  widget.profileName,
+                  style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 19,
                       color: Colors.black,
@@ -48,7 +53,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
                 child: Image.asset(
-                  'assets/images/pulauuwayag.jpeg',
+                  widget.imagePath,
                   fit: BoxFit.cover,
                 ),
               )),
@@ -59,7 +64,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             height: 200,
             width: 360,
             decoration: BoxDecoration(
-                color: const Color(0xff8D81F8),
+                color: Color(0xFFFF73C3),
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -91,7 +96,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                       ),
                       Text(
-                        "14 March 2023",
+                        "21 June 2024",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12,
@@ -111,7 +116,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Order",
+                        "Package",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 17,
@@ -119,7 +124,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             fontWeight: FontWeight.normal),
                       ),
                       Text(
-                        "Rp3.750.000",
+                        "Teman Curhat",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 17,
@@ -135,7 +140,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Discount",
+                        "Price",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 17,
@@ -143,7 +148,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             fontWeight: FontWeight.normal),
                       ),
                       Text(
-                        "Rp0",
+                        "Rp15.000",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 17,
@@ -167,7 +172,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "Rp3.750.000",
+                        "Rp17.000",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 17,
@@ -187,7 +192,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             height: 156,
             width: 360,
             decoration: BoxDecoration(
-                color: const Color(0xff8D81F8),
+                color: Color(0xFFFF73C3),
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -233,18 +238,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         height: 51,
                         width: 312,
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                                offset: const Offset(0, 4),
-                                color: Colors.black.withOpacity(0.25),
-                                blurRadius: 4)
+                              // offset: Offset(0, 4),
+                              color: Colors.white,
+                              blurRadius: 4,
+                            ),
                           ],
                           borderRadius: BorderRadius.circular(15),
                         ),
-                      )
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Center(
+                              child: Text(
+                                'BANK BCA',
+                                style: TextStyle(
+                                  fontSize:
+                                      24, // Adjust the font size as needed
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),
@@ -260,43 +281,43 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 decoration: const BoxDecoration(color: Colors.white),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(15, 15, 25, 0),
+                padding: const EdgeInsets.fromLTRB(50, 15, 25, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 9),
+                      padding: const EdgeInsets.only(left: 0),
                       child: RichText(
                           text: const TextSpan(children: [
                         TextSpan(
-                            text: 'Rp5.022.000',
+                            text: 'Rp17.000',
                             style: TextStyle(
                                 fontFamily: 'Poppins',
                                 color: Color(0xffd30202),
-                                fontSize: 17,
+                                fontSize: 30,
                                 fontWeight: FontWeight.w400)),
-                        TextSpan(
-                            text: '/malam',
-                            style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 11,
-                                color: Color(0xff6a6262),
-                                fontWeight: FontWeight.normal))
+                        // TextSpan(
+                        //     text: '/malam',
+                        //     style: TextStyle(
+                        //         fontFamily: 'Poppins',
+                        //         fontSize: 11,
+                        //         color: Color(0xff6a6262),
+                        //         fontWeight: FontWeight.normal))
                       ])),
                     ),
                     InkWell(
                       onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const ConfirmPayment()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ConfirmPayment()));
                       },
                       child: Container(
                         height: 60,
                         width: 170,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
-                            color: const Color(0xff8D81F8),
+                            color: Color(0xFFFF73C3),
                             boxShadow: [
                               BoxShadow(
                                   color: Colors.black.withOpacity(0.25),
@@ -305,7 +326,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             ]),
                         child: const Center(
                           child: Text(
-                            'Order Now',
+                            'Pay Now',
                             style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 17,
