@@ -1,6 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/services/api_service.dart';
+import 'package:frontend/services/token_storage.dart';
 
-class MyBookingsPage extends StatelessWidget {
+class MyBookingsPage extends StatefulWidget {
+  @override
+  _MyBookingsPageState createState() => _MyBookingsPageState();
+}
+
+class _MyBookingsPageState extends State<MyBookingsPage> {
+  final ApiService _apiService = ApiService();
+  final TokenStorage _tokenStorage = TokenStorage();
+  List<dynamic> _pendingBookings = [];
+  List<dynamic> _onProgressBookings = [];
+  List<dynamic> _completedBookings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBookings();
+  }
+
+  Future<void> _fetchBookings() async {
+    final accessToken = await _tokenStorage.getAccessToken();
+    if (accessToken != null) {
+      final bookings = await _apiService.getUserBookings(accessToken);
+      if (bookings != null) {
+        setState(() {
+          _pendingBookings = bookings.where((booking) => booking['status'] == 'pending').toList();
+          _onProgressBookings = bookings.where((booking) => booking['status'] == 'on_progress').toList();
+          _completedBookings = bookings.where((booking) => booking['status'] == 'completed').toList();
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -29,133 +62,70 @@ class MyBookingsPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  BookingCard(
-                    type: 'Paket Kondangan',
-                    title: 'Iqbal Saputra',
-                    date: '13 Mei 2024 - 14 Mei 2024 - 1 Day',
-                    status: 'PENDING',
-                    statusColor: Colors.orange,
-                    imageUrl: 'assets/images/iqbal.jpeg',
-                  ),
-                  BookingCard(
-                    type: 'SleepCall',
-                    title: 'Ahmad Yusuf',
-                    date: '20 June 2024 - 20 June 2024 - 3 Hours',
-                    status: 'PENDING',
-                    statusColor: Colors.orange,
-                    imageUrl: 'assets/images/kennoy.jpeg',
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'You’ve reached at the end of your bookings, Order ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigate to more bookings page
-                    },
-                    child: Text(
-                      'more bookings?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  BookingCard(
-                    type: 'Paket Kondangan',
-                    title: 'Dina Amalia',
-                    date: '15 Mei 2024 - 16 Mei 2024 - 1 Day',
-                    status: 'ON PROGRESS',
-                    statusColor: Colors.blue,
-                    imageUrl: 'assets/images/dina.jpeg',
-                  ),
-                  BookingCard(
-                    type: 'SleepCall',
-                    title: 'Budi Santoso',
-                    date: '22 June 2024 - 22 June 2024 - 3 Hours',
-                    status: 'ON PROGRESS',
-                    statusColor: Colors.blue,
-                    imageUrl: 'assets/images/budi.jpeg',
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'You’ve reached at the end of your bookings, Order ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigate to more bookings page
-                    },
-                    child: Text(
-                      'more bookings?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  BookingCard(
-                    type: 'Paket Kondangan',
-                    title: 'Iqbal Saputra',
-                    date: '13 Mei 2024 - 14 Mei 2024 - 1 Day',
-                    status: 'DONE',
-                    statusColor: Colors.green,
-                    imageUrl: 'assets/images/iqbal.jpeg',
-                  ),
-                  BookingCard(
-                    type: 'SleepCall',
-                    title: 'Ahmad Yusuf',
-                    date: '20 June 2024 - 20 June 2024 - 3 Hours',
-                    status: 'DONE',
-                    statusColor: Colors.green,
-                    imageUrl: 'assets/images/kennoy.jpeg',
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'You’ve reached at the end of your bookings, Order ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigate to more bookings page
-                    },
-                    child: Text(
-                      'more bookings?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildBookingList(_pendingBookings),
+            _buildBookingList(_onProgressBookings),
+            _buildBookingList(_completedBookings),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildBookingList(List<dynamic> bookings) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: bookings.length,
+              itemBuilder: (context, index) {
+                final booking = bookings[index];
+                return BookingCard(
+                  type: booking['type'] ?? 'N/A',
+                  title: booking['companion_name'] ?? 'N/A',
+                  date: '${booking['tanggal']} - ${booking['waktu']}',
+                  status: booking['status'].toUpperCase(),
+                  statusColor: _getStatusColor(booking['status']),
+                  imageUrl: booking['companion_image'] ?? 'assets/images/default.jpg',
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'You’ve reached at the end of your bookings, Order ',
+            style: TextStyle(fontSize: 16),
+          ),
+          InkWell(
+            onTap: () {
+              // Navigate to more bookings page
+            },
+            child: Text(
+              'more bookings?',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'pending':
+        return Colors.orange;
+      case 'on_progress':
+        return Colors.blue;
+      case 'completed':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
   }
 }
 
@@ -200,14 +170,14 @@ class BookingCard extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  '',
-                  style: TextStyle(color: Colors.white),
+                  status,
+                  style: TextStyle(color: statusColor),
                 ),
               ],
             ),
           ),
           ListTile(
-            leading: Image.asset(
+            leading: Image.network(
               imageUrl,
               width: 50,
               height: 50,

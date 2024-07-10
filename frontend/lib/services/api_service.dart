@@ -132,10 +132,41 @@ class ApiService {
   }
 
   Future<Response> bookCompanion(FormData bookingData) async {
+    final accessToken = await tokenStorage.getAccessToken();
     try {
-      return await _dio.post('booking/bookings/', data: bookingData);
+      return await _dio.post(
+        'booking/bookings/',
+        data: bookingData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
     } catch (e) {
       return _handleError(e);
+    }
+  }
+
+   Future<List<dynamic>?> getUserBookings(String accessToken) async {
+    try {
+      final response = await _dio.get(
+        'booking/history/',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        print('Failed to fetch bookings: ${response.data}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching bookings: $e');
+      return null;
     }
   }
 
