@@ -4,7 +4,7 @@ import 'token_storage.dart';
 
 class ApiService {
   late final Dio _dio;
-  final String _baseUrl = 'http://192.168.158.184:8000/api/';
+  final String _baseUrl = 'http://192.168.100.92:8000/api/';
   final TokenStorage tokenStorage = TokenStorage();
 
   ApiService() {
@@ -120,8 +120,24 @@ class ApiService {
     print('Error fetching companions: $e');
     return null;
   }
-}
+} 
 
+ 
+  Future<Response> uploadFile(FormData formData) async {
+    try {
+      return await _dio.post('files/upload/', data: formData);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
+
+  Future<Response> bookCompanion(FormData bookingData) async {
+    try {
+      return await _dio.post('booking/bookings/', data: bookingData);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
 
   Response _handleError(dynamic e) {
     if (e is DioException) {

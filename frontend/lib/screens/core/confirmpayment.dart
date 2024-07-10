@@ -2,9 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:frontend/screens/core/completescreen.dart';
 import 'dart:io';
+import 'package:frontend/services/api_service.dart';
+import 'package:frontend/services/token_storage.dart';
+import 'package:dio/dio.dart';
 
 class ConfirmPayment extends StatefulWidget {
-  const ConfirmPayment({super.key});
+  final int duration;
+  final String phoneNumber;
+  final String date;
+  final String time;
+  final double totalPrice;
+  final int companionId;
+
+  const ConfirmPayment(
+      {super.key,
+      required this.duration,
+      required this.phoneNumber,
+      required this.date,
+      required this.time,
+      required this.totalPrice,
+      required this.companionId});
 
   @override
   State<ConfirmPayment> createState() => _ConfirmPaymentState();
@@ -12,6 +29,8 @@ class ConfirmPayment extends StatefulWidget {
 
 class _ConfirmPaymentState extends State<ConfirmPayment> {
   File? _selectedImage;
+  final ApiService _apiService = ApiService();
+  final TokenStorage _tokenStorage = TokenStorage();
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -21,6 +40,42 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
       setState(() {
         _selectedImage = File(pickedFile.path);
       });
+    }
+  }
+
+  Future<void> _confirmOrder() async {
+    final userData = await _tokenStorage.getUserData();
+    final userId = int.tryParse(userData['user_id'] ?? '');
+
+    if (userId == null) {
+      print("User ID is invalid.");
+      return;
+    }
+
+    final formData = FormData.fromMap({
+      "duration": widget.duration,
+      "phone_number": widget.phoneNumber,
+      "tanggal": widget.date,
+      "waktu": widget.time,
+      "total_price": widget.totalPrice.toStringAsFixed(2),
+      "payment_proof": _selectedImage != null ? await MultipartFile.fromFile(_selectedImage!.path) : null,
+      "status": "pending",
+      "user": userId,
+      "companion": widget.companionId,
+    });
+
+    try {
+      final response = await _apiService.bookCompanion(formData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const CompletePage()));
+      } else {
+        // Handle error
+        print("Booking failed: ${response.data}");
+      }
+    } catch (e) {
+      // Handle error
+      print("Booking error: $e");
     }
   }
 
@@ -170,12 +225,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CompletePage()));
-                },
+                onTap: _confirmOrder,
                 child: Container(
                   height: 55,
                   width: double.infinity,

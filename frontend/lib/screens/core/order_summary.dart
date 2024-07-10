@@ -4,9 +4,28 @@ import 'package:frontend/screens/core/confirmpayment.dart';
 class OrderSummary extends StatefulWidget {
   final String profileName;
   final String imagePath;
+  final String companionName;
+  final String companionAge;
+  final String date;
+  final String time;
+  final String phoneNumber;
+  final String duration;
+  final String totalPrice;
+  final int companionId;
 
-  const OrderSummary(
-      {super.key, required this.profileName, required this.imagePath});
+  const OrderSummary({
+    super.key,
+    required this.profileName,
+    required this.imagePath,
+    required this.companionName,
+    required this.companionAge,
+    required this.date,
+    required this.time,
+    required this.phoneNumber,
+    required this.duration,
+    required this.totalPrice,
+    required this.companionId,
+  });
 
   @override
   State<OrderSummary> createState() => _OrderSummaryState();
@@ -27,10 +46,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                 Text(
                   widget.profileName,
                   style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 19,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
+                    fontFamily: 'Poppins',
+                    fontSize: 19,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                 )
               ],
             ),
@@ -40,14 +60,16 @@ class _OrderSummaryState extends State<OrderSummary> {
             height: 200,
             width: 360,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                color: const Color(0xFFE8E8E8),
-                boxShadow: [
-                  BoxShadow(
-                      offset: const Offset(0, 4),
-                      color: Colors.black.withOpacity(0.25),
-                      blurRadius: 4)
-                ]),
+              borderRadius: BorderRadius.circular(25),
+              color: const Color(0xFFE8E8E8),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(0, 4),
+                  color: Colors.black.withOpacity(0.25),
+                  blurRadius: 4,
+                ),
+              ],
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
               child: Image.network(
@@ -58,51 +80,55 @@ class _OrderSummaryState extends State<OrderSummary> {
           ),
           const SizedBox(height: 18),
           Container(
-            height: 260, // Adjusted height to accommodate new field
+            height: 280, // Adjusted height to accommodate new field
             width: 360,
             decoration: BoxDecoration(
-                color: const Color(0xFFFF73C3),
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                      offset: const Offset(0, 4),
-                      color: Colors.black.withOpacity(0.25),
-                      blurRadius: 4)
-                ]),
-            child: const Padding(
-              padding: EdgeInsets.only(top: 20, left: 24, right: 24),
+              color: const Color(0xFFFF73C3),
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(0, 4),
+                  color: Colors.black.withOpacity(0.25),
+                  blurRadius: 4,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, left: 24, right: 24),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Order Summary",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 30),
-                        child: Icon(
+                        padding: const EdgeInsets.only(left: 30),
+                        child: const Icon(
                           Icons.calendar_today_outlined,
                           size: 22,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        "21 June 2024",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 12,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                        widget.date,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.fromLTRB(1, 6, 1, 6),
                     child: Divider(
                       thickness: 1.5,
@@ -112,109 +138,143 @@ class _OrderSummaryState extends State<OrderSummary> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Name",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                       Text(
-                        "Nata",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                        widget.companionName,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Age",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                       Text(
-                        "20",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                        widget.companionAge,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Phone Number",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                       Text(
-                        "+62 123 456 7890", // Example phone number
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                        widget.phoneNumber,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Text(
+                        "Time",
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                       Text(
+                        widget.time,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
                         "Duration",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                       Text(
-                        "3 jam",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
+                        '${widget.duration} Jam', // Display duration in hours
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Total Price",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
-                        "Rp17.000",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                        widget.totalPrice,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -239,43 +299,66 @@ class _OrderSummaryState extends State<OrderSummary> {
                     Padding(
                       padding: const EdgeInsets.only(left: 0),
                       child: RichText(
-                          text: const TextSpan(children: [
-                        TextSpan(
-                            text: 'Rp17.000',
-                            style: TextStyle(
-                                fontFamily: 'Poppins',
-                                color: Color(0xffd30202),
-                                fontSize: 30,
-                                fontWeight: FontWeight.w400)),
-                      ])),
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text: widget.totalPrice,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Color(0xffd30202),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ]),
+                      ),
                     ),
                     InkWell(
                       onTap: () {
+                        // Remove any non-numeric characters (except for the decimal point)
+                        String totalPriceCleaned = widget.totalPrice
+                            .replaceAll('Rp', '')
+                            .replaceAll('.', '')
+                            .replaceAll(',', '.')
+                            .trim();
+                        double totalPriceParsed = double.parse(totalPriceCleaned);
+
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ConfirmPayment()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ConfirmPayment(
+                              duration: int.parse(widget.duration),
+                              phoneNumber: widget.phoneNumber,
+                              date: widget.date,
+                              time: widget.time,
+                              totalPrice: totalPriceParsed,
+                              companionId: widget.companionId,
+                            ),
+                          ),
+                        );
                       },
                       child: Container(
                         height: 60,
                         width: 170,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: const Color(0xFFFF73C3),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.25),
-                                  offset: const Offset(0, 4),
-                                  blurRadius: 4)
-                            ]),
+                          borderRadius: BorderRadius.circular(30),
+                          color: const Color(0xFFFF73C3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              offset: const Offset(0, 4),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
                         child: const Center(
                           child: Text(
                             'Pay Now',
                             style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                              fontFamily: 'Poppins',
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

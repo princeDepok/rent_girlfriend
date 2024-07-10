@@ -23,23 +23,23 @@ class _SelectPackagesState extends State<SelectPackages> {
   final TextEditingController _phoneNumberController = TextEditingController();
 
   final List<String> _times = [
-    "05:00 AM",
-    "06:00 AM",
-    "07:00 AM",
-    "08:00 AM",
-    "09:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "01:00 PM",
-    "02:00 PM",
-    "03:00 PM",
-    "04:00 PM",
-    "05:00 PM",
-    "06:00 PM",
-    "07:00 PM",
-    "08:00 PM",
-    "09:00 PM",
+    "05:00:00",
+    "06:00:00",
+    "07:00:00",
+    "08:00:00",
+    "09:00:00",
+    "10:00:00",
+    "11:00:00",
+    "12:00:00",
+    "13:00:00",
+    "14:00:00",
+    "15:00:00",
+    "16:00:00",
+    "17:00:00",
+    "18:00:00",
+    "19:00:00",
+    "20:00:00",
+    "21:00:00",
   ];
 
   Future<void> _selectDate(BuildContext context) async {
@@ -64,12 +64,24 @@ class _SelectPackagesState extends State<SelectPackages> {
         MaterialPageRoute(builder: (context) => SignUp()),
       );
     } else {
+      final selectedPackage = _getPackage(_selectedPriceIndex);
+      final totalPrice = selectedPackage['price'];
+      final duration = selectedPackage['duration'];
+
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => OrderSummary(
             profileName: widget.companion['name'],
             imagePath: widget.companion['profile_picture'],
+            companionName: widget.companion['name'],
+            companionAge: widget.companion['age'].toString(),
+            date: _selectedDate.toIso8601String().split('T')[0],
+            time: _selectedTime!,
+            phoneNumber: _phoneNumberController.text,
+            duration: duration.toString(),
+            totalPrice: totalPrice,
+            companionId: widget.companion['id'], // Pass companion ID
           ),
         ),
       );
@@ -89,17 +101,17 @@ class _SelectPackagesState extends State<SelectPackages> {
       case 0:
         final price = pricePerHour * 3;
         final discountedPrice = price - (price * 0.05);
-        return {'label': '3 Jam', 'price': currencyFormat.format(discountedPrice)};
+        return {'label': '3 Jam', 'price': currencyFormat.format(discountedPrice), 'duration': 3};
       case 1:
         final price = pricePerHour * 6;
         final discountedPrice = price - (price * 0.10);
-        return {'label': '6 Jam', 'price': currencyFormat.format(discountedPrice)};
+        return {'label': '6 Jam', 'price': currencyFormat.format(discountedPrice), 'duration': 6};
       case 2:
         final price = pricePerHour * 12;
         final discountedPrice = price - (price * 0.15);
-        return {'label': '12 Jam', 'price': currencyFormat.format(discountedPrice)};
+        return {'label': '12 Jam', 'price': currencyFormat.format(discountedPrice), 'duration': 12};
       default:
-        return {'label': 'N/A', 'price': currencyFormat.format(0)};
+        return {'label': 'N/A', 'price': currencyFormat.format(0), 'duration': 0};
     }
   }
 
@@ -387,51 +399,6 @@ class _SelectPackagesState extends State<SelectPackages> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class DateChip extends StatelessWidget {
-  final String day;
-  final String date;
-  final bool isSelected;
-
-  const DateChip({
-    Key? key,
-    required this.day,
-    required this.date,
-    this.isSelected = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isSelected ? Color(0xFFFF73C3) : Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: isSelected ? Color(0xFFFF73C3) : Colors.grey,
-        ),
-      ),
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      child: Column(
-        children: [
-          Text(
-            day,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey,
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            date,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
-              fontSize: 16,
-            ),
-          ),
-        ],
       ),
     );
   }
