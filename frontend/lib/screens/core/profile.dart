@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
 import 'package:frontend/screens/auth/sign_up.dart';
-import 'package:frontend/screens/core/companion_dashboard.dart';
-import 'package:frontend/screens/core/companion_register.dart';
 import 'package:frontend/screens/home.dart';
 import 'package:frontend/services/token_storage.dart';
 import 'package:frontend/services/api_service.dart';
@@ -89,19 +87,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _navigateToCompanionScreen() async {
-    if (_isCompanion) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CompanionDashboard()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CompanionRegister()),
-      );
-    }
-  }
 
   void _navigateToSignUp() {
     Navigator.push(
@@ -189,30 +174,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             },
                           ),
                           const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: GestureDetector(
-                              onTap: _navigateToCompanionScreen,
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
-                                width: double.infinity,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Text(
-                                  'Go to Companion',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: 'Outfit',
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),

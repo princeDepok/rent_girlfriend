@@ -87,9 +87,9 @@ class _SignUpState extends State<SignUp> {
       };
 
       try {
-        final success = await _apiService.registerAndLoginUser(data);
-        if (success) {
-          _showSuccessDialog();
+        final userData = await _apiService.registerAndLoginUser(data);
+        if (userData != null) {
+          _navigateToHome(userData);
         } else {
           _showError('Registration or login failed. Please try again.');
         }
@@ -103,27 +103,6 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Registration Successful'),
-          content: const Text('Please sign in to continue.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Sign In'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _navigateToSignIn();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
@@ -131,24 +110,11 @@ class _SignUpState extends State<SignUp> {
     ));
   }
 
-  void _navigateToSignIn() {
+  void _navigateToHome(Map<String, dynamic> userData) {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => SignIn()),
+      MaterialPageRoute(builder: (context) => Home(userData: userData)),
       (Route<dynamic> route) => false,
-    );
-  }
-
-  void _navigateToHome(userData) {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => Home(userData: userData)));
-  }
-
-  Widget _buildLoadingOverlay() {
-    if (!_isLoading) return Container();
-    return Container(
-      color: Colors.black54,
-      child: const Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -357,10 +323,22 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
             ),
-            _buildLoadingOverlay(),
+            if (_isLoading)
+              Container(
+                color: Colors.black54,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
           ],
         ),
       ),
+    );
+  }
+
+  void _navigateToSignIn() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SignIn()),
+      (Route<dynamic> route) => false,
     );
   }
 }

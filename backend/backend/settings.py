@@ -44,9 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'users',
-    'bookings',
-    'payment',
-    'chat',
+    'companion',
+    'booking'
 ]
 
 MIDDLEWARE = [

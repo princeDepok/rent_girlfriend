@@ -4,7 +4,7 @@ import 'token_storage.dart';
 
 class ApiService {
   late final Dio _dio;
-  final String _baseUrl = 'http://192.168.100.126:8000/api/';
+  final String _baseUrl = 'http://192.168.158.184:8000/api/';
   final TokenStorage tokenStorage = TokenStorage();
 
   ApiService() {
@@ -38,38 +38,52 @@ class ApiService {
     }
   }
 
-  Future<bool> registerAndLoginUser(Map<String, dynamic> registrationData) async {
+  Future<Map<String, dynamic>?> registerAndLoginUser(Map<String, dynamic> registrationData) async {
     try {
       final registerResponse = await registerUser(registrationData);
-      if (registerResponse.statusCode == 200 ||
-          registerResponse.statusCode == 201) {
+      print('Register response: ${registerResponse.data}');
+      if (registerResponse.statusCode == 200 || registerResponse.statusCode == 201) {
         final loginData = {
           'username': registrationData['email'],
           'password': registrationData['password'],
         };
         final loginResponse = await loginUser(loginData);
+        print('Login response: ${loginResponse.data}');
         if (loginResponse.statusCode == 200) {
           final tokens = loginResponse.data;
           await tokenStorage.saveTokens(tokens['access'], tokens['refresh']);
-          return true;
+          final userId = tokens['user_id'];
+          if (userId != null) {
+            final userDetailsResponse = await getUserDetails(userId, tokens['access']);
+            print('User details response: ${userDetailsResponse.data}');
+            if (userDetailsResponse.statusCode == 200) {
+              await tokenStorage.saveUserData(userDetailsResponse.data);
+              return userDetailsResponse.data;
+            } else {
+              print('Fetching user details failed: ${userDetailsResponse.data}');
+              return null;
+            }
+          } else {
+            print('User ID is null in login response');
+            return null;
+          }
         } else {
           print('Login failed after registration: ${loginResponse.data}');
-          return false;
+          return null;
         }
       } else {
         print('Registration failed: ${registerResponse.data}');
-        return false;
+        return null;
       }
     } catch (e) {
       print('Error: $e');
-      return false;
+      return null;
     }
   }
 
   Future<Response> getUserDetails(int userId, String accessToken) async {
     try {
-      print(
-          'Requesting user details for userId: $userId with token: $accessToken');
+      print('Requesting user details for userId: $userId with token: $accessToken');
       final response = await _dio.get(
         'users/user/$userId/',
         options: Options(
@@ -90,19 +104,24 @@ class ApiService {
     }
   }
 
-  Future<Response> registerCompanion(Map<String, dynamic> data) async {
-    String? accessToken = await tokenStorage.getAccessToken();
-    return await _dio.post(
-      'companion/register/',
-      data: data,
-      options: Options(
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
+  Future<List<dynamic>?> getCompanions() async {
+  try {
+    final response = await _dio.get(
+      'companion/companions/',
+    
     );
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      print('Failed to fetch companions: ${response.data}');
+      return null;
+    }
+  } catch (e) {
+    print('Error fetching companions: $e');
+    return null;
   }
+}
+
 
   Response _handleError(dynamic e) {
     if (e is DioException) {

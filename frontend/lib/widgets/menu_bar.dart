@@ -1,5 +1,3 @@
-// lib/widgets/custom_menu_bar.dart
-
 import 'package:flutter/material.dart';
 
 class CustomMenuBar extends StatelessWidget {
@@ -36,10 +34,8 @@ class CustomMenuBar extends StatelessWidget {
               'assets/icons/home-1.png', 'assets/icons/home-2.png', 'Home', 0),
           _buildMenuItem('assets/icons/orders-1.png',
               'assets/icons/orders-2.png', 'Orders', 1),
-          _buildMenuItem(
-              'assets/icons/chat-1.png', 'assets/icons/chat-2.png', 'Chat', 2),
           _buildMenuItem('assets/icons/profile-1.png',
-              'assets/icons/profile-2.png', 'Profile', 3),
+              'assets/icons/profile-2.png', 'Profile', 2),
         ],
       ),
     );

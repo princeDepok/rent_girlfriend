@@ -3,54 +3,153 @@ import 'package:flutter/material.dart';
 class MyBookingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'Orders',
-          style: TextStyle(
-              color: Colors.black,
-              fontFamily: "Outfit",
-              fontWeight: FontWeight.w600),
+    return DefaultTabController(
+      length: 3, // Number of tabs
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(
+            'Orders',
+            style: TextStyle(
+                color: Colors.black,
+                fontFamily: "Outfit",
+                fontWeight: FontWeight.w600),
+          ),
+          bottom: TabBar(
+            labelColor: Color(0xFFFF73C3),
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Color(0xFFFF73C3),
+            tabs: [
+              Tab(text: 'Pending'),
+              Tab(text: 'On Progress'),
+              Tab(text: 'Completed'),
+            ],
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
+        body: TabBarView(
           children: [
-            BookingCard(
-              type: 'Paket Kondangan',
-              title: 'Iqbal Saputra',
-              date: '13 Mei 2024 - 14 Mei 2024 - 1 Day',
-              status: 'DONE',
-              statusColor: Colors.green,
-              imageUrl: 'assets/images/iqbal.jpeg',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  BookingCard(
+                    type: 'Paket Kondangan',
+                    title: 'Iqbal Saputra',
+                    date: '13 Mei 2024 - 14 Mei 2024 - 1 Day',
+                    status: 'PENDING',
+                    statusColor: Colors.orange,
+                    imageUrl: 'assets/images/iqbal.jpeg',
+                  ),
+                  BookingCard(
+                    type: 'SleepCall',
+                    title: 'Ahmad Yusuf',
+                    date: '20 June 2024 - 20 June 2024 - 3 Hours',
+                    status: 'PENDING',
+                    statusColor: Colors.orange,
+                    imageUrl: 'assets/images/kennoy.jpeg',
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'You’ve reached at the end of your bookings, Order ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      // Navigate to more bookings page
+                    },
+                    child: Text(
+                      'more bookings?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            BookingCard(
-              type: 'SleepCall',
-              title: 'Ahmad Yusuf',
-              date: '20 June 2024 - 20 June 2024 - 3 Hours',
-              status: 'DONE',
-              statusColor: Colors.green,
-              imageUrl: 'assets/images/kennoy.jpeg',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  BookingCard(
+                    type: 'Paket Kondangan',
+                    title: 'Dina Amalia',
+                    date: '15 Mei 2024 - 16 Mei 2024 - 1 Day',
+                    status: 'ON PROGRESS',
+                    statusColor: Colors.blue,
+                    imageUrl: 'assets/images/dina.jpeg',
+                  ),
+                  BookingCard(
+                    type: 'SleepCall',
+                    title: 'Budi Santoso',
+                    date: '22 June 2024 - 22 June 2024 - 3 Hours',
+                    status: 'ON PROGRESS',
+                    statusColor: Colors.blue,
+                    imageUrl: 'assets/images/budi.jpeg',
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'You’ve reached at the end of your bookings, Order ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      // Navigate to more bookings page
+                    },
+                    child: Text(
+                      'more bookings?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-            Text(
-              'You’ve reached at the end of your bookings, Order ',
-              style: TextStyle(fontSize: 16),
-            ),
-            InkWell(
-              onTap: () {
-                // Navigate to more bookings page
-              },
-              child: Text(
-                'more bookings?',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  BookingCard(
+                    type: 'Paket Kondangan',
+                    title: 'Iqbal Saputra',
+                    date: '13 Mei 2024 - 14 Mei 2024 - 1 Day',
+                    status: 'DONE',
+                    statusColor: Colors.green,
+                    imageUrl: 'assets/images/iqbal.jpeg',
+                  ),
+                  BookingCard(
+                    type: 'SleepCall',
+                    title: 'Ahmad Yusuf',
+                    date: '20 June 2024 - 20 June 2024 - 3 Hours',
+                    status: 'DONE',
+                    statusColor: Colors.green,
+                    imageUrl: 'assets/images/kennoy.jpeg',
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'You’ve reached at the end of your bookings, Order ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      // Navigate to more bookings page
+                    },
+                    child: Text(
+                      'more bookings?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -108,21 +207,17 @@ class BookingCard extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading:
-                Image.asset(imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+            leading: Image.asset(
+              imageUrl,
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.error, color: Colors.red);
+              },
+            ),
             title: Text(title),
             subtitle: Text(date),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  status,
-                  style: TextStyle(
-                      color: statusColor, fontWeight: FontWeight.bold),
-                ),
-                Icon(Icons.arrow_forward_ios),
-              ],
-            ),
           ),
         ],
       ),

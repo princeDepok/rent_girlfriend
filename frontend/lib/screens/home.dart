@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/auth/sign_in.dart';
-import 'package:frontend/screens/core/chat.dart';
-import 'package:frontend/screens/core/list_chat.dart';
-import 'package:frontend/screens/core/list_details.dart';
+import 'package:frontend/screens/core/companion_details.dart';
 import 'package:frontend/screens/core/order.dart';
 import 'package:frontend/screens/core/profile.dart';
-import 'package:frontend/screens/core/book.dart'; // Import the doctor detail page
 import 'package:frontend/services/token_storage.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:frontend/widgets/menu_bar.dart';
+import 'package:frontend/widgets/companion_card.dart';
+import 'package:frontend/widgets/service_category.dart';
 
-// Const for strings
 const String popularServices = 'Services Paling Laku';
 const String ordersPage = 'Orders Page';
 const String profilePage = 'Profile Page';
@@ -26,61 +25,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final TokenStorage _tokenStorage = TokenStorage();
-  final List<Profile> profiles = [
-    const Profile(
-        imagePath: 'assets/images/natayow.jpeg',
-        name: 'Natayow',
-        description: 'Charming',
-        about:
-            'Gw minat besar pada film tentang hacking dan kejahatan komputer.',
-        gender: 'Female',
-        age: '20'),
-    const Profile(
-        imagePath: 'assets/images/jamet.jpeg',
-        name: 'Rayhan Diffa',
-        description: 'Soft Boy',
-        about: 'Aku memang pencinta wanita namun ku bukan buaya.',
-        gender: 'Lady Boy',
-        age: '21'),
-    const Profile(
-        imagePath: 'assets/images/kennoy.jpeg',
-        name: 'Ahmad Yusuf',
-        description: 'Fragile Boy',
-        about:
-            'Saya baru mualaf beberapa bulan lalu, saya senang memancing dan saya rapuh.',
-        gender: 'Male',
-        age: '20'),
-    const Profile(
-        imagePath: 'assets/images/iqbal.jpeg',
-        name: 'Iqbal Saputra',
-        description: 'Handsome Boy',
-        about:
-            'Enthusiast film dan teknologi. Gw selalu penuh energi dan ide-ide kreatif.',
-        gender: 'Male',
-        age: '23'),
-    const Profile(
-        imagePath: 'assets/images/kennoy2.jpeg',
-        name: 'Kenny Ekenayake',
-        description: 'Fun',
-        about: 'Seorang penggemar kuliner yang lahir di BSD Lama.',
-        gender: 'Female',
-        age: '27'),
-    const Profile(
-        imagePath: 'assets/images/adrian.jpeg',
-        name: 'Adrian Rachman',
-        description: 'Wibu Boy',
-        about: 'Wibu akut yang selalu pergi ke event wibu.',
-        gender: 'Male',
-        age: '19'),
-    const Profile(
-        imagePath: 'assets/images/jamet2.jpeg',
-        name: 'Jammedun Hakim',
-        description: 'Fun',
-        about: 'Berjiwa petualang dan menyukai olahraga luar ruangan.',
-        gender: 'Male',
-        age: '22'),
-  ];
-
+  final ApiService _apiService = ApiService();
+  List<dynamic> _companions = [];
   int _selectedIndex = 0;
   String? _username;
 
@@ -88,12 +34,20 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _loadUserData();
+    _fetchCompanions();
   }
 
   Future<void> _loadUserData() async {
     final userData = await _tokenStorage.getUserData();
     setState(() {
       _username = userData['username'] ?? 'Guest';
+    });
+  }
+
+  Future<void> _fetchCompanions() async {
+    final companions = await _apiService.getCompanions();
+    setState(() {
+      _companions = companions ?? [];
     });
   }
 
@@ -108,7 +62,6 @@ class _HomeState extends State<Home> {
       await _tokenStorage.clearUserData();
       _navigateToSignIn();
     } catch (e) {
-      // Handle error, e.g., show a Snackbar
       print('Error signing out: $e');
     }
   }
@@ -126,7 +79,7 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.white,
               elevation: 0,
               title: Text(
-                'Halo, ${_username ?? 'Guest'}',
+                'Halo, ${widget.userData?['username'] ?? _username ?? 'Guest'}',
                 style: const TextStyle(
                     color: Colors.black,
                     fontFamily: "Outfit",
@@ -146,10 +99,8 @@ class _HomeState extends State<Home> {
           : _selectedIndex == 1
               ? MyBookingsPage()
               : _selectedIndex == 2
-                  ? ListChat()
-                  : _selectedIndex == 3
-                      ? const ProfileScreen()
-                      : const ProfileScreen(),
+                  ? const ProfileScreen()
+                  : const ProfileScreen(),
       bottomNavigationBar: CustomMenuBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
@@ -189,18 +140,18 @@ class _HomeState extends State<Home> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: profiles.length,
+              itemCount: _companions.length,
               itemBuilder: (context, index) {
-                final profile = profiles[index];
+                final companion = _companions[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: GestureDetector(
-                    child: ProfileCard(profile: profile),
+                    child: CompanionCard(companion: companion),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ListDetail(profile: profile),
+                          builder: (context) => CompanionDetails(companion: companion),
                         ),
                       );
                     },
@@ -211,151 +162,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildProfileContent() {
-    return const Center(
-      child: Text(
-        profilePage,
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class Profile {
-  final String imagePath;
-  final String name;
-  final String description;
-  final String gender;
-  final String about;
-  final String age;
-
-  const Profile({
-    required this.imagePath,
-    required this.name,
-    required this.description,
-    required this.gender,
-    required this.about,
-    required this.age,
-  });
-}
-
-class ProfileCard extends StatelessWidget {
-  final Profile profile;
-
-  const ProfileCard({required this.profile});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(9.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.asset(
-              profile.imagePath,
-              width: 130,
-              height: 130,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  profile.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Icon(Icons.label, size: 16, color: Colors.purple),
-                    const SizedBox(width: 4),
-                    Text(profile.description),
-                    const SizedBox(width: 8),
-                    Icon(
-                      profile.gender.toLowerCase() == 'male'
-                          ? Icons.male
-                          : Icons.female,
-                      size: 16,
-                      color: profile.gender.toLowerCase() == 'male'
-                          ? Colors.blue
-                          : Colors.pink,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(profile.gender),
-                    SizedBox(width: 8),
-                  ],
-                ),
-                Text(
-                  "${profile.age} years old",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  profile.about,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 5,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ServiceCategory extends StatelessWidget {
-  final String iconPath;
-  final String label;
-
-  const ServiceCategory({required this.iconPath, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 75,
-          height: 75,
-          decoration: BoxDecoration(
-            color: Colors.red[100],
-            borderRadius: BorderRadius.circular(34),
-            image: DecorationImage(
-              image: AssetImage(iconPath),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(label, textAlign: TextAlign.center),
-      ],
     );
   }
 }
