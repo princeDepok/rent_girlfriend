@@ -10,7 +10,7 @@ class ChatPage extends StatelessWidget {
         name: 'Ahmad',
         description: 'Hey Rayhan...',
         gender: 'Female',
-        about: '',
+        about: '', age: '',
       ),
       time: '04:29 PM',
       isMe: false,
@@ -22,7 +22,7 @@ class ChatPage extends StatelessWidget {
         description:
             'I was thinking about our first date today. Remember how nervous we both were?',
         gender: 'Male',
-        about: '',
+        about: '', age: '',
       ),
       time: '05:30 PM',
       isMe: false,
@@ -34,7 +34,7 @@ class ChatPage extends StatelessWidget {
         description:
             'Oh, I remember! You could barely hold your fork steady. But it was endearing. I think that’s when I knew there was something special about you.',
         gender: 'Male',
-        about: '',
+        about: '', age: '',
       ),
       time: '06:30 PM',
       isMe: true,
@@ -46,7 +46,7 @@ class ChatPage extends StatelessWidget {
         description:
             'Really? I thought you might have been put off by my clumsiness.',
         gender: 'Female',
-        about: '',
+        about: '', age: '',
       ),
       time: '04:29 PM',
       isMe: false,

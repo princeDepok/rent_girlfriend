@@ -28,56 +28,57 @@ class _HomeState extends State<Home> {
   final TokenStorage _tokenStorage = TokenStorage();
   final List<Profile> profiles = [
     const Profile(
-      imagePath: 'assets/images/natayow.jpeg',
-      name: 'Natayow',
-      description: 'Charming',
-      about: 'Gw minat besar pada film tentang hacking dan kejahatan komputer.',
-      gender: 'Female',
-    ),
+        imagePath: 'assets/images/natayow.jpeg',
+        name: 'Natayow',
+        description: 'Charming',
+        about:
+            'Gw minat besar pada film tentang hacking dan kejahatan komputer.',
+        gender: 'Female',
+        age: '20'),
     const Profile(
-      imagePath: 'assets/images/jamet.jpeg',
-      name: 'Rayhan Diffa',
-      description: 'Soft Boy',
-      about: 'Aku memang pencinta wanita namun ku bukan buaya.',
-      gender: 'Lady Boy',
-    ),
+        imagePath: 'assets/images/jamet.jpeg',
+        name: 'Rayhan Diffa',
+        description: 'Soft Boy',
+        about: 'Aku memang pencinta wanita namun ku bukan buaya.',
+        gender: 'Lady Boy',
+        age: '21'),
     const Profile(
-      imagePath: 'assets/images/kennoy.jpeg',
-      name: 'Ahmad Yusuf',
-      description: 'Fragile Boy',
-      about:
-          'Saya baru mualaf beberapa bulan lalu, saya senang memancing dan saya rapuh.',
-      gender: 'Male',
-    ),
+        imagePath: 'assets/images/kennoy.jpeg',
+        name: 'Ahmad Yusuf',
+        description: 'Fragile Boy',
+        about:
+            'Saya baru mualaf beberapa bulan lalu, saya senang memancing dan saya rapuh.',
+        gender: 'Male',
+        age: '20'),
     const Profile(
-      imagePath: 'assets/images/iqbal.jpeg',
-      name: 'Iqbal Saputra',
-      description: 'Handsome Boy',
-      about:
-          'Enthusiast film dan teknologi. Gw selalu penuh energi dan ide-ide kreatif.',
-      gender: 'Male',
-    ),
+        imagePath: 'assets/images/iqbal.jpeg',
+        name: 'Iqbal Saputra',
+        description: 'Handsome Boy',
+        about:
+            'Enthusiast film dan teknologi. Gw selalu penuh energi dan ide-ide kreatif.',
+        gender: 'Male',
+        age: '23'),
     const Profile(
-      imagePath: 'assets/images/kennoy2.jpeg',
-      name: 'Kenny Ekenayake',
-      description: 'Fun',
-      about: 'Seorang penggemar kuliner yang lahir di BSD Lama.',
-      gender: 'Female',
-    ),
+        imagePath: 'assets/images/kennoy2.jpeg',
+        name: 'Kenny Ekenayake',
+        description: 'Fun',
+        about: 'Seorang penggemar kuliner yang lahir di BSD Lama.',
+        gender: 'Female',
+        age: '27'),
     const Profile(
-      imagePath: 'assets/images/adrian.jpeg',
-      name: 'Adrian Rachman',
-      description: 'Wibu Boy',
-      about: 'Wibu akut yang selalu pergi ke event wibu.',
-      gender: 'Male',
-    ),
+        imagePath: 'assets/images/adrian.jpeg',
+        name: 'Adrian Rachman',
+        description: 'Wibu Boy',
+        about: 'Wibu akut yang selalu pergi ke event wibu.',
+        gender: 'Male',
+        age: '19'),
     const Profile(
-      imagePath: 'assets/images/jamet2.jpeg',
-      name: 'Jammedun Hakim',
-      description: 'Fun',
-      about: 'Berjiwa petualang dan menyukai olahraga luar ruangan.',
-      gender: 'Male',
-    ),
+        imagePath: 'assets/images/jamet2.jpeg',
+        name: 'Jammedun Hakim',
+        description: 'Fun',
+        about: 'Berjiwa petualang dan menyukai olahraga luar ruangan.',
+        gender: 'Male',
+        age: '22'),
   ];
 
   int _selectedIndex = 0;
@@ -178,48 +179,6 @@ class _HomeState extends State<Home> {
             ),
             const SizedBox(height: 20),
             const Text(
-              popularServices,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'Outfit',
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              itemCount: 6,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                final serviceCategories = [
-                  'SleepCall',
-                  'Teman Curhat',
-                  'Kondangan',
-                  'Holiday Events',
-                  'Teman Ibadah',
-                  'More'
-                ];
-
-                final iconPaths = [
-                  'assets/icons/sleepcall.jpeg',
-                  'assets/icons/tmncurhat2.jpeg',
-                  'assets/icons/kondangan.jpeg',
-                  'assets/icons/holiday.jpeg',
-                  'assets/icons/temanibadah.jpeg',
-                  'assets/icons/more.jpeg'
-                ];
-
-                return ServiceCategory(
-                  iconPath: iconPaths[index],
-                  label: serviceCategories[index],
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            const Text(
               recommendedGamers,
               style: TextStyle(
                   fontSize: 20,
@@ -271,6 +230,7 @@ class Profile {
   final String description;
   final String gender;
   final String about;
+  final String age;
 
   const Profile({
     required this.imagePath,
@@ -278,6 +238,7 @@ class Profile {
     required this.description,
     required this.gender,
     required this.about,
+    required this.age,
   });
 }
 
@@ -307,8 +268,8 @@ class ProfileCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
             child: Image.asset(
               profile.imagePath,
-              width: 100,
-              height: 100,
+              width: 130,
+              height: 130,
               fit: BoxFit.cover,
             ),
           ),
@@ -341,9 +302,17 @@ class ProfileCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(profile.gender),
+                    SizedBox(width: 8),
                   ],
                 ),
-                const SizedBox(height: 4),
+                Text(
+                  "${profile.age} years old",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(height: 4),
                 Text(
                   profile.about,
                   style: TextStyle(
