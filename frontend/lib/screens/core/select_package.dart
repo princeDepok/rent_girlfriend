@@ -64,7 +64,12 @@ class _SelectPackagesState extends State<SelectPackages> {
         MaterialPageRoute(builder: (context) => SignUp()),
       );
     } else {
-      final selectedPackage = _getPackage(_selectedPriceIndex);
+      final selectedPackage = _selectedPriceIndex != -1
+          ? _getPackage(_selectedPriceIndex)
+          : {
+              'price': _calculateCustomPrice(_customDuration!).toString(),
+              'duration': _customDuration!,
+            };
       final totalPrice = selectedPackage['price'];
       final duration = selectedPackage['duration'];
 

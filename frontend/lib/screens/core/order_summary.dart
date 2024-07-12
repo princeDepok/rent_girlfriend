@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/core/confirmpayment.dart';
+import 'package:intl/intl.dart';
 
 class OrderSummary extends StatefulWidget {
   final String profileName;
@@ -34,6 +35,9 @@ class OrderSummary extends StatefulWidget {
 class _OrderSummaryState extends State<OrderSummary> {
   @override
   Widget build(BuildContext context) {
+    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
+    double parsedTotalPrice = double.parse(widget.totalPrice.replaceAll(',', ''));
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 236, 236, 236),
       body: Column(
@@ -268,7 +272,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                         ),
                       ),
                       Text(
-                        widget.totalPrice,
+                        currencyFormat.format(parsedTotalPrice),
                         style: const TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 17,
@@ -301,7 +305,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                       child: RichText(
                         text: TextSpan(children: [
                           TextSpan(
-                            text: widget.totalPrice,
+                            text: currencyFormat.format(parsedTotalPrice),
                             style: const TextStyle(
                               fontFamily: 'Poppins',
                               color: Color(0xffd30202),
@@ -314,14 +318,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                     ),
                     InkWell(
                       onTap: () {
-                        // Remove any non-numeric characters (except for the decimal point)
-                        String totalPriceCleaned = widget.totalPrice
-                            .replaceAll('Rp', '')
-                            .replaceAll('.', '')
-                            .replaceAll(',', '.')
-                            .trim();
-                        double totalPriceParsed = double.parse(totalPriceCleaned);
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -330,7 +326,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                               phoneNumber: widget.phoneNumber,
                               date: widget.date,
                               time: widget.time,
-                              totalPrice: totalPriceParsed,
+                              totalPrice: parsedTotalPrice,
                               companionId: widget.companionId,
                             ),
                           ),

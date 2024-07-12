@@ -6,6 +6,7 @@ import 'package:frontend/services/api_service.dart';
 import 'package:frontend/services/token_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class ConfirmPayment extends StatefulWidget {
   final int duration;
@@ -96,6 +97,8 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
 
   @override
   Widget build(BuildContext context) {
+    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 236, 236, 236),
       body: SingleChildScrollView(
@@ -233,6 +236,30 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                                     fit: BoxFit.cover),
                               ),
                             ),
+                    ),
+                    const SizedBox(height: 25),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Total Price",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          currencyFormat.format(widget.totalPrice),
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 25),
                   ],
