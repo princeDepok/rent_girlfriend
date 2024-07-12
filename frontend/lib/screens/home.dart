@@ -27,14 +27,24 @@ class _HomeState extends State<Home> {
   final TokenStorage _tokenStorage = TokenStorage();
   final ApiService _apiService = ApiService();
   List<dynamic> _companions = [];
+  List<dynamic> _filteredCompanions = [];
   int _selectedIndex = 0;
   String? _username;
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
     _fetchCompanions();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadUserData() async {
@@ -48,6 +58,17 @@ class _HomeState extends State<Home> {
     final companions = await _apiService.getCompanions();
     setState(() {
       _companions = companions ?? [];
+      _filteredCompanions = _companions;
+    });
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _filteredCompanions = _companions.where((companion) {
+        final nameLower = companion['name'].toLowerCase();
+        final searchLower = _searchController.text.toLowerCase();
+        return nameLower.contains(searchLower);
+      }).toList();
     });
   }
 
@@ -88,7 +109,9 @@ class _HomeState extends State<Home> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.search, color: Colors.black),
-                  onPressed: () {},
+                  onPressed: () {
+                    showSearch(context: context, delegate: CompanionSearchDelegate(_companions));
+                  },
                   tooltip: 'Search',
                 ),
               ],
@@ -140,9 +163,9 @@ class _HomeState extends State<Home> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: _companions.length,
+              itemCount: _filteredCompanions.length,
               itemBuilder: (context, index) {
-                final companion = _companions[index];
+                final companion = _filteredCompanions[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: GestureDetector(
@@ -165,3 +188,98 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+class CompanionSearchDelegate extends SearchDelegate {
+  final List<dynamic> companions;
+
+  CompanionSearchDelegate(this.companions);
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+          showSuggestions(context);
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    final results = companions.where((companion) {
+      final nameLower = companion['name'].toLowerCase();
+      final searchLower = query.toLowerCase();
+      return nameLower.contains(searchLower);
+    }).toList();
+
+    return results.isEmpty
+        ? Center(child: Text('No companions found.'))
+        : ListView.builder(
+            itemCount: results.length,
+            itemBuilder: (context, index) {
+              final companion = results[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: GestureDetector(
+                  child: CompanionCard(companion: companion),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CompanionDetails(companion: companion),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (query.isEmpty) {
+      return Center(
+        child: Text('Please enter a name to search'),
+      );
+    }
+
+    final suggestions = companions.where((companion) {
+      final nameLower = companion['name'].toLowerCase();
+      final searchLower = query.toLowerCase();
+      return nameLower.contains(searchLower);
+    }).toList();
+
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        final companion = suggestions[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: GestureDetector(
+            child: CompanionCard(companion: companion),
+            onTap: () {
+              query = companion['name'];
+              showResults(context);
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+
