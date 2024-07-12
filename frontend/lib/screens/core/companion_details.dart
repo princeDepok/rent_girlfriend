@@ -1,19 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/core/select_package.dart';
 
-class CompanionDetails extends StatelessWidget {
+class CompanionDetails extends StatefulWidget {
   final Map<String, dynamic> companion;
 
   const CompanionDetails({required this.companion});
 
   @override
+  State<CompanionDetails> createState() => _CompanionDetailsState();
+}
+
+class _CompanionDetailsState extends State<CompanionDetails> {
+  late String _backgroundImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _backgroundImage = widget.companion['profile_picture'];
+  }
+
+  void _updateBackgroundImage(String newImage) {
+    setState(() {
+      _backgroundImage = newImage;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List<String> photos = [widget.companion['profile_picture']];
+    if (widget.companion['photos'] != null) {
+      for (var photo in widget.companion['photos']) {
+        photos.add(photo['photo']);
+      }
+    }
+
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.network(
-              companion['profile_picture'],
+              _backgroundImage,
               fit: BoxFit.cover,
             ),
           ),
@@ -53,7 +79,7 @@ class CompanionDetails extends StatelessWidget {
                       children: [
                         const SizedBox(height: 20),
                         Text(
-                          companion['name'] ?? 'Unknown',
+                          widget.companion['name'] ?? 'Unknown',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 28,
@@ -74,7 +100,7 @@ class CompanionDetails extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                               decoration: BoxDecoration(
-                                color: companion['gender'] == 'Male'
+                                color: widget.companion['gender'] == 'Male'
                                     ? const Color.fromARGB(255, 110, 227, 240)
                                     : const Color.fromARGB(255, 248, 157, 188),
                                 borderRadius: BorderRadius.circular(10.0),
@@ -83,12 +109,12 @@ class CompanionDetails extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    companion['gender'] == 'Male' ? Icons.male : Icons.female,
+                                    widget.companion['gender'] == 'Male' ? Icons.male : Icons.female,
                                     color: Colors.black,
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    companion['gender'] ?? 'N/A',
+                                    widget.companion['gender'] ?? 'N/A',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -103,7 +129,7 @@ class CompanionDetails extends StatelessWidget {
                                 const Icon(Icons.star_border_outlined, size: 20, color: Colors.yellow),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${companion['rating'] ?? 'N/A'}',
+                                  '${widget.companion['rating'] ?? 'N/A'}',
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -124,7 +150,7 @@ class CompanionDetails extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          companion['bio'] ?? 'No biography available.',
+                          widget.companion['bio'] ?? 'No biography available.',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 15,
@@ -141,19 +167,18 @@ class CompanionDetails extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        PhotoAlbum(photos: [
-                          companion['profile_picture'],
-                          companion['picture'] ?? '',
-                        ]),
+                        PhotoAlbum(
+                          photos: photos,
+                          onPhotoTap: _updateBackgroundImage,
+                        ),
                         const SizedBox(height: 30),
-                        const SizedBox(height: 20), // To ensure the button is visible
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SelectPackages(companion: companion)),
+                                    builder: (context) => SelectPackages(companion: widget.companion)),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -208,8 +233,9 @@ class CompanionDetails extends StatelessWidget {
 
 class PhotoAlbum extends StatelessWidget {
   final List<String> photos;
+  final Function(String) onPhotoTap;
 
-  const PhotoAlbum({required this.photos});
+  const PhotoAlbum({required this.photos, required this.onPhotoTap});
 
   @override
   Widget build(BuildContext context) {
@@ -219,23 +245,26 @@ class PhotoAlbum extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: photos.length,
         itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.only(right: 10),
-            width: 150,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(photos[index]),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 2,
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+          return GestureDetector(
+            onTap: () => onPhotoTap(photos[index]),
+            child: Container(
+              margin: const EdgeInsets.only(right: 10),
+              width: 150,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(photos[index]),
+                  fit: BoxFit.cover,
                 ),
-              ],
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
             ),
           );
         },
