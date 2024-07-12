@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:frontend/screens/core/completescreen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:frontend/services/api_service.dart';
 import 'package:frontend/services/token_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 
 class ConfirmPayment extends StatefulWidget {
   final int duration;
@@ -44,6 +45,13 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
   }
 
   Future<void> _confirmOrder() async {
+    if (_selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please upload a payment proof.")),
+      );
+      return;
+    }
+
     final userData = await _tokenStorage.getUserData();
     final userId = int.tryParse(userData['user_id'] ?? '');
 
@@ -58,7 +66,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
       "tanggal": widget.date,
       "waktu": widget.time,
       "total_price": widget.totalPrice.toStringAsFixed(2),
-      "payment_proof": _selectedImage != null ? await MultipartFile.fromFile(_selectedImage!.path) : null,
+      "payment_proof": await MultipartFile.fromFile(_selectedImage!.path),
       "status": "pending",
       "user": userId,
       "companion": widget.companionId,
@@ -77,6 +85,13 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
       // Handle error
       print("Booking error: $e");
     }
+  }
+
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Account number copied to clipboard")),
+    );
   }
 
   @override
@@ -161,10 +176,13 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                           ],
                         ),
                         const Spacer(),
-                        const Icon(
-                          Icons.copy,
-                          size: 27,
-                          color: Color(0xff6A6262),
+                        GestureDetector(
+                          onTap: () => _copyToClipboard("1290 8089 7789 1465"),
+                          child: const Icon(
+                            Icons.copy,
+                            size: 27,
+                            color: Color(0xff6A6262),
+                          ),
                         ),
                       ],
                     ),

@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           children: [
             RotationTransition(
               turns: _controller,
-              child: Image.asset('assets/images/iqbal.jpeg', width: 200, height: 200),
+              child: Image.asset('assets/icons/Go-Friend.png', width: 200, height: 200),
             ),
             const SizedBox(height: 20),
           ],
