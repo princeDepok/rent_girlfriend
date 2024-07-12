@@ -72,8 +72,24 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+  bool _isAtLeast21YearsOld(String dateOfBirth) {
+    final dob = DateTime.parse(dateOfBirth);
+    final today = DateTime.now();
+    final age = today.year - dob.year;
+    if (today.month < dob.month || (today.month == dob.month && today.day < dob.day)) {
+      return age > 21;
+    }
+    return age >= 21;
+  }
+
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      final dob = _controllers['dateOfBirth']!.text;
+      if (!_isAtLeast21YearsOld(dob)) {
+        _showError('You must be at least 21 years old to sign up.');
+        return;
+      }
+
       setState(() {
         _isLoading = true;
       });

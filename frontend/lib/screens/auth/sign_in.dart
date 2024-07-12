@@ -217,7 +217,7 @@ class _SignInState extends State<SignIn> {
                     const SizedBox(height: 32),
                     _buildTextField(
                       controller: _usernameController,
-                      hintText: 'Username',
+                      hintText: 'Email',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';

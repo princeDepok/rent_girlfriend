@@ -100,23 +100,22 @@ class _SelectPackagesState extends State<SelectPackages> {
 
   Map<String, dynamic> _getPackage(int index) {
     final pricePerHour = _parsePrice(widget.companion['price_per_hour']);
-    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2);
 
     switch (index) {
       case 0:
         final price = pricePerHour * 3;
         final discountedPrice = price - (price * 0.05);
-        return {'label': '3 Jam', 'price': currencyFormat.format(discountedPrice), 'duration': 3};
+        return {'label': '3 Jam', 'price': discountedPrice.toString(), 'duration': 3};
       case 1:
         final price = pricePerHour * 6;
         final discountedPrice = price - (price * 0.10);
-        return {'label': '6 Jam', 'price': currencyFormat.format(discountedPrice), 'duration': 6};
+        return {'label': '6 Jam', 'price': discountedPrice.toString(), 'duration': 6};
       case 2:
         final price = pricePerHour * 12;
         final discountedPrice = price - (price * 0.15);
-        return {'label': '12 Jam', 'price': currencyFormat.format(discountedPrice), 'duration': 12};
+        return {'label': '12 Jam', 'price': discountedPrice.toString(), 'duration': 12};
       default:
-        return {'label': 'N/A', 'price': currencyFormat.format(0), 'duration': 0};
+        return {'label': 'N/A', 'price': '0', 'duration': 0};
     }
   }
 

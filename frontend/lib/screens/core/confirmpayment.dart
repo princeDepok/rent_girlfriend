@@ -169,7 +169,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                                   fontWeight: FontWeight.normal),
                             ),
                             const Text(
-                              "1290 8089 7789 1465",
+                              "5855611616",
                               style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontSize: 17,
